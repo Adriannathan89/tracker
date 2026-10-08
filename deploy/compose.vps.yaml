@@ -1,0 +1,6 @@
+# Compose 2.24.4+: replace the public port mapping with a loopback-only binding.
+# Run from the repository root with both Compose files.
+services:
+  frontend:
+    ports: !override
+      - "127.0.0.1:${FRONTEND_PORT:-8080}:80"
