@@ -28,9 +28,9 @@ class _AddDebtSheetState extends State<AddDebtSheet> {
       await widget.controller.mutate('POST', 'debt/create', body: {
         'amount': parseAmount(_amount.text), 'description': _description.text.trim(), 'debtorId': widget.friend.id,
       });
-      if (mounted) Navigator.pop(context);
-    } catch (e) { if (mounted) setState(() { _error = e.toString(); _failures++; }); }
-    finally { if (mounted) setState(() => _busy = false); }
+      if (mounted) { Navigator.pop(context); }
+    } catch (e) { if (mounted) { setState(() { _error = e.toString(); _failures++; }); } }
+    finally { if (mounted) { setState(() => _busy = false); } }
   }
   @override
   Widget build(BuildContext context) => PopScope(canPop: !_busy, child: Padding(

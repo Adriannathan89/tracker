@@ -49,7 +49,7 @@ void main() {
       }
       if (!authorized) {
         initial++;
-        if (initial == 2) barrier.complete();
+        if (initial == 2) { barrier.complete(); }
         return ApiResponse(401, {'message': 'Unauthorized'});
       }
       return ok('loaded');
@@ -92,7 +92,7 @@ void main() {
     final session = SessionStore(base, MemoryStore());
     await session.accept(['refresh_token=r; Max-Age=10000; Path=/; Secure']);
     final api = ApiClient(base, session, StubTransport((m, u, h, b) async {
-      if (u.path.endsWith('auth/refresh')) throw const ApiException('Offline');
+      if (u.path.endsWith('auth/refresh')) { throw const ApiException('Offline'); }
       return ApiResponse(401, {'message': 'Unauthorized'});
     }));
     await expectLater(api.request('GET', 'user/profile'), throwsA(isA<ApiException>()));

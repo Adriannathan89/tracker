@@ -63,7 +63,7 @@ class _TrackerShellState extends State<TrackerShell> {
       IconButton(tooltip: widget.controller.dark ? 'Mode terang' : 'Mode gelap',
         onPressed: () async {
           try { await widget.controller.toggleTheme(); }
-          catch (e) { if (context.mounted) toast(context, e.toString()); }
+          catch (e) { if (context.mounted) { toast(context, e.toString()); } }
         }, icon: Icon(widget.controller.dark ? Icons.light_mode_outlined : Icons.dark_mode_outlined)),
     ]),
     body: SafeArea(top: false, child: Center(child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 760),

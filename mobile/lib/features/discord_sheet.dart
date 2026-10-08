@@ -32,7 +32,7 @@ class _DiscordSheetState extends State<DiscordSheet> with WidgetsBindingObserver
     setState(() { _busy = true; _error = null; _code = null; });
     try {
       final result = await widget.controller.api.request('POST', 'user/discord/verify');
-      if (!mounted) return;
+      if (!mounted) { return; }
       setState(() => _code = object(result));
       _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
         if (!mounted) { timer.cancel(); return; }
@@ -40,29 +40,29 @@ class _DiscordSheetState extends State<DiscordSheet> with WidgetsBindingObserver
         if (_seconds == 0) { timer.cancel(); return; }
         if (timer.tick % 5 == 0 && WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) _check();
       });
-    } catch (e) { if (mounted) setState(() => _error = e.toString()); }
-    finally { if (mounted) setState(() => _busy = false); }
+    } catch (e) { if (mounted) { setState(() => _error = e.toString()); } }
+    finally { if (mounted) { setState(() => _busy = false); } }
   }
   Future<void> _check() async {
-    if (_checking || _code == null || _seconds == 0) return;
+    if (_checking || _code == null || _seconds == 0) { return; }
     setState(() => _checking = true);
     try {
       final result = object(await widget.controller.api.request('GET', 'user/discord/status'));
-      if (!mounted) return;
+      if (!mounted) { return; }
       if (result['verified'] == true) {
         _timer?.cancel();
         await widget.controller.reload();
-        if (mounted) Navigator.pop(context);
+        if (mounted) { Navigator.pop(context); }
       } else { setState(() => _error = null); }
-    } catch (e) { if (mounted) setState(() => _error = e.toString()); }
-    finally { if (mounted) setState(() => _checking = false); }
+    } catch (e) { if (mounted) { setState(() => _error = e.toString()); } }
+    finally { if (mounted) { setState(() => _checking = false); } }
   }
   Future<void> _install() async {
     try {
       final uri = Uri.parse(_code!['installUrl'] as String);
-      if (uri.scheme != 'https' || uri.host != 'discord.com') throw const FormatException('URL bot tidak valid.');
-      if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) throw const FormatException('Tidak dapat membuka Discord.');
-    } catch (e) { if (mounted) setState(() => _error = e.toString()); }
+      if (uri.scheme != 'https' || uri.host != 'discord.com') { throw const FormatException('URL bot tidak valid.'); }
+      if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) { throw const FormatException('Tidak dapat membuka Discord.'); }
+    } catch (e) { if (mounted) { setState(() => _error = e.toString()); } }
   }
   @override
   Widget build(BuildContext context) => SingleChildScrollView(padding: const EdgeInsets.all(24),
@@ -77,7 +77,7 @@ class _DiscordSheetState extends State<DiscordSheet> with WidgetsBindingObserver
           style: const TextStyle(fontSize: 23, fontWeight: FontWeight.w800)),
         TextButton.icon(onPressed: _seconds == 0 ? null : () async {
           await Clipboard.setData(ClipboardData(text: '/verify ${_code!['code']}'));
-          if (context.mounted) toast(context, 'Perintah disalin.');
+          if (context.mounted) { toast(context, 'Perintah disalin.'); }
         }, icon: const Icon(Icons.copy), label: const Text('Salin perintah')),
         const SizedBox(height: 8), Text(_seconds == 0 ? 'Kode kedaluwarsa. Buat kode baru.' : 'Berlaku ${_seconds ~/ 60}:${(_seconds % 60).toString().padLeft(2, '0')} · menunggu verifikasi'),
         const SizedBox(height: 16), OutlinedButton.icon(onPressed: _install, icon: const Icon(Icons.open_in_new), label: const Text('Install bot Discord')),

@@ -33,10 +33,10 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
         'title': _title.text.trim(), 'description': _description.text,
         'amount': parseAmount(_amount.text), 'date': DateFormat('yyyy-MM-dd').format(_date),
       });
-      if (!mounted) return;
+      if (!mounted) { return; }
       Navigator.pop(context, true);
-    } catch (e) { if (mounted) setState(() { _error = e.toString(); _failures++; }); }
-    finally { if (mounted) setState(() => _busy = false); }
+    } catch (e) { if (mounted) { setState(() { _error = e.toString(); _failures++; }); } }
+    finally { if (mounted) { setState(() => _busy = false); } }
   }
   @override
   Widget build(BuildContext context) => PopScope(canPop: !_busy, child: Scaffold(
@@ -78,7 +78,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
             trailing: const Icon(Icons.chevron_right), onTap: _busy ? null : () async {
               final result = await showDatePicker(context: context, initialDate: _date,
                 firstDate: DateTime(2000), lastDate: DateTime(DateTime.now().year + 5, 12, 31));
-              if (result != null && mounted) setState(() => _date = result);
+              if (result != null && mounted) { setState(() => _date = result); }
             }), const SizedBox(height: 20),
           const Card(child: Padding(padding: EdgeInsets.all(16), child: Text('AI akan menyarankan kategori. Setelah disimpan, periksa dan konfirmasi catatan agar masuk ke saldo.'))),
           const SizedBox(height: 24), BusyButton(busy: _busy, label: 'Simpan catatan', onPressed: _save),

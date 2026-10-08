@@ -14,12 +14,12 @@ void main() {
     final controller = AppController(ApiClient(base, SessionStore(base, MemoryStore()),
       StubTransport((method, uri, headers, body) async {
         calls.add('$method ${uri.path}'); bodies[uri.path] = body;
-        if (uri.path.endsWith('user/profile')) return ok({'id': 'me', 'username': 'adrian',
-          'discord': {'connected': false, 'username': '', 'commitNotifEnabled': false, 'weeklyNotifEnabled': false}});
-        if (uri.path.endsWith('user/records')) return ok({'expenses': [], 'incomes': [], 'debts': [],
-          'cash': 100, 'debt': 0, 'receivable': 0, 'balance': 100});
-        if (uri.path.endsWith('debt') || uri.path.endsWith('debt/owed')) return ok({'debts': []});
-        if (uri.path.contains('user/friend')) return ok([]);
+        if (uri.path.endsWith('user/profile')) { return ok({'id': 'me', 'username': 'adrian',
+          'discord': {'connected': false, 'username': '', 'commitNotifEnabled': false, 'weeklyNotifEnabled': false}}); }
+        if (uri.path.endsWith('user/records')) { return ok({'expenses': [], 'incomes': [], 'debts': [],
+          'cash': 100, 'debt': 0, 'receivable': 0, 'balance': 100}); }
+        if (uri.path.endsWith('debt') || uri.path.endsWith('debt/owed')) { return ok({'debts': []}); }
+        if (uri.path.contains('user/friend')) { return ok([]); }
         return ok();
       })), MemoryStore());
     controller.state = SessionState.signedOut;

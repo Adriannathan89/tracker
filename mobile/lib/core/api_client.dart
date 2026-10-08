@@ -30,7 +30,7 @@ class IoTransport implements ApiTransport {
       request = await _client.openUrl(method, uri).timeout(const Duration(seconds: 20));
       request.followRedirects = false;
       headers.forEach(request.headers.set);
-      if (body != null) request.write(jsonEncode(body));
+      if (body != null) { request.write(jsonEncode(body)); }
       final response = await request.close().timeout(const Duration(seconds: 30));
       final bytes = await response.fold<List<int>>([], (acc, part) {
         if (acc.length + part.length > 8 * 1024 * 1024) {
@@ -78,48 +78,48 @@ class ApiClient {
     final revision = _revision;
     var response = await _send(method, path, body, identity);
     if (response.status == 401 && !_authPaths.contains(path)) {
-      if (identity != _identity) throw const ApiException('Sesi telah berubah.', status: 401);
+      if (identity != _identity) { throw const ApiException('Sesi telah berubah.', status: 401); }
       if (revision == _revision) {
         final refresh = _refresh ??= _refreshSession(identity);
         try { await refresh; }
-        finally { if (identical(_refresh, refresh)) _refresh = null; }
+        finally { if (identical(_refresh, refresh)) { _refresh = null; } }
       }
       response = await _send(method, path, body, identity);
-      if (response.status == 401) await _expire(identity);
+      if (response.status == 401) { await _expire(identity); }
     }
     _check(response);
     return (response.body as Map<String, dynamic>?)?['data'];
   }
   Future<ApiResponse> _send(String method, String path, Object? body, int identity) async {
-    if (_closed) throw const ApiException('Aplikasi sudah ditutup.');
+    if (_closed) { throw const ApiException('Aplikasi sudah ditutup.'); }
     final response = await transport.send(method, base.resolve(path), {
       'Accept': 'application/json', 'Content-Type': 'application/json',
       if (session.cookieHeader.isNotEmpty) 'Cookie': session.cookieHeader,
     }, body);
-    if (_closed || identity != _identity) throw const ApiException('Sesi telah berubah.', status: 401);
+    if (_closed || identity != _identity) { throw const ApiException('Sesi telah berubah.', status: 401); }
     // Error responses must not replace a still valid refresh cookie.
-    if (response.status >= 200 && response.status < 300) await session.accept(response.cookies);
+    if (response.status >= 200 && response.status < 300) { await session.accept(response.cookies); }
     return response;
   }
   Future<void> _refreshSession(int identity) async {
     final response = await _send('POST', 'auth/refresh', null, identity);
-    if (response.status == 401) await _expire(identity);
+    if (response.status == 401) { await _expire(identity); }
     _check(response);
     _revision++;
   }
   Future<void> _expire(int identity) async {
-    if (identity != _identity) return;
+    if (identity != _identity) { return; }
     _identity++;
     await session.clear();
-    if (!_closed) sessionExpired.value = true;
+    if (!_closed) { sessionExpired.value = true; }
   }
   void _check(ApiResponse response) {
-    if (response.status >= 200 && response.status < 300) return;
+    if (response.status >= 200 && response.status < 300) { return; }
     final data = response.body;
     var message = data is Map && data['message'] is String
         ? data['message'] as String : 'Permintaan gagal (${response.status}).';
-    if (response.status == 401) message = 'Username/password salah atau sesi telah berakhir.';
-    if (response.status == 503) message = 'Fitur ini belum tersedia di server. Coba lagi nanti.';
+    if (response.status == 401) { message = 'Username/password salah atau sesi telah berakhir.'; }
+    if (response.status == 503) { message = 'Fitur ini belum tersedia di server. Coba lagi nanti.'; }
     throw ApiException(message, status: response.status);
   }
   Future<void> login(String username, String password) async {
@@ -133,7 +133,7 @@ class ApiClient {
     finally {
       _identity++;
       await session.clear();
-      if (!_closed) sessionExpired.value = true;
+      if (!_closed) { sessionExpired.value = true; }
     }
   }
   void close() { _closed = true; _identity++; transport.close(); sessionExpired.dispose(); }

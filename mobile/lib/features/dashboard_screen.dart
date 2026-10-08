@@ -60,7 +60,7 @@ class _TrendPainter extends CustomPainter {
   final List<double> changes;
   @override
   void paint(Canvas canvas, Size size) {
-    if (changes.length < 2) return;
+    if (changes.length < 2) { return; }
     var value = 0.0;
     final values = changes.map((d) => value += d).toList();
     final min = values.reduce((a, b) => a < b ? a : b), max = values.reduce((a, b) => a > b ? a : b);

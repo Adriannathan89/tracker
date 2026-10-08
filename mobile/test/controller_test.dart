@@ -15,13 +15,13 @@ void main() {
     final base = Uri.parse('https://tracker.example.com/api/');
     final controller = AppController(ApiClient(base, SessionStore(base, MemoryStore()),
       StubTransport((m, uri, h, b) async {
-        if (uri.path.endsWith('user/profile')) return ok(profile());
+        if (uri.path.endsWith('user/profile')) { return ok(profile()); }
         if (uri.path.endsWith('user/records')) {
           reads++;
           if (reads == 1) { await old.future; return ok(overview(10)); }
           return ok(overview(20));
         }
-        if (uri.path.endsWith('debt') || uri.path.endsWith('debt/owed')) return ok({'debts': []});
+        if (uri.path.endsWith('debt') || uri.path.endsWith('debt/owed')) { return ok({'debts': []}); }
         return ok([]);
       })), MemoryStore());
     controller.state = SessionState.signedIn;

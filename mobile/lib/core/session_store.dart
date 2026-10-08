@@ -37,7 +37,7 @@ class SessionStore {
   Future<void> restore() async {
     _cookies.clear();
     final value = await storage.read(_key);
-    if (value == null) return;
+    if (value == null) { return; }
     try {
       final data = jsonDecode(value) as Map<String, dynamic>;
       for (final name in ['token', 'refresh_token']) {
@@ -59,10 +59,10 @@ class SessionStore {
       final cookie = Cookie.fromSetCookieValue(value);
       if (!['token', 'refresh_token'].contains(cookie.name) ||
           cookie.domain != null || (cookie.path != null && cookie.path != '/') ||
-          (cookie.secure && base.scheme != 'https')) continue;
+          (cookie.secure && base.scheme != 'https')) { continue; }
       final expiry = cookie.maxAge != null
           ? _now().add(Duration(seconds: cookie.maxAge!)) : cookie.expires;
-      if (expiry == null) continue;
+      if (expiry == null) { continue; }
       if (cookie.value.isEmpty || !expiry.isAfter(_now())) {
         _cookies.remove(cookie.name);
       } else {

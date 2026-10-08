@@ -17,16 +17,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _busy = false;
   String? _error;
   Future<void> _run(Future<void> Function() action) async {
-    if (_busy) return;
+    if (_busy) { return; }
     setState(() { _busy = true; _error = null; });
     try { await action(); }
-    catch (e) { if (mounted) setState(() => _error = e.toString()); }
-    finally { if (mounted) setState(() => _busy = false); }
+    catch (e) { if (mounted) { setState(() => _error = e.toString()); } }
+    finally { if (mounted) { setState(() => _busy = false); } }
   }
   Future<void> _rename() async {
     final username = await showDialog<String>(context: context,
       builder: (_) => RenameDialog(username: widget.controller.profile?.username ?? ''));
-    if (username != null && mounted) await _run(() => widget.controller.mutate('PUT', 'user/profile', body: {'username': username}));
+    if (username != null && mounted) { await _run(() => widget.controller.mutate('PUT', 'user/profile', body: {'username': username})); }
   }
   @override
   Widget build(BuildContext context) {

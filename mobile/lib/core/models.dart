@@ -21,7 +21,7 @@ const categoryEmoji = {'makanan': '🍜', 'minuman': '☕', 'transport': '🚗',
   'belanja': '🛍️', 'hiburan': '🎮', 'tagihan': '📋', 'kesehatan': '💊',
   'gaji': '💰', 'hadiah': '🎁'};
 double? parseAmount(String input) {
-  if (!RegExp(r'^\d{1,15}([,.]\d{1,2})?$').hasMatch(input.trim())) return null;
+  if (!RegExp(r'^\d{1,15}([,.]\d{1,2})?$').hasMatch(input.trim())) { return null; }
   final value = double.tryParse(input.trim().replaceAll(',', '.'));
   return value != null && value > 0 && value < 1e15 ? value : null;
 }

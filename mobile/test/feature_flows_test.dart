@@ -30,14 +30,14 @@ class Fixture {
     controller = AppController(ApiClient(base, SessionStore(base, MemoryStore()),
       StubTransport((method, uri, headers, body) async {
         if (method != 'GET') { calls['$method ${uri.path}'] = body; return ok(); }
-        if (uri.path.endsWith('user/profile')) return ok({'id': 'me', 'username': 'adrian',
-          'discord': {'connected': false, 'username': '', 'commitNotifEnabled': false, 'weeklyNotifEnabled': false}});
-        if (uri.path.endsWith('user/records')) return ok({'expenses': [record(committed: committed)],
-          'incomes': [], 'debts': [], 'cash': 10, 'debt': 15000, 'receivable': 0, 'balance': -14990});
-        if (uri.path.endsWith('user/friend/request')) return ok([{'id': 'q1',
-          'sender': {'id': 'other', 'username': 'siti'}, 'receiver': {'id': 'me', 'username': 'adrian'}}]);
-        if (uri.path.endsWith('user/friend')) return ok([{'id': 'friend', 'username': 'budi', 'status': 'accepted'}]);
-        if (uri.path.endsWith('debt/owed')) return ok({'debts': [debt()]});
+        if (uri.path.endsWith('user/profile')) { return ok({'id': 'me', 'username': 'adrian',
+          'discord': {'connected': false, 'username': '', 'commitNotifEnabled': false, 'weeklyNotifEnabled': false}}); }
+        if (uri.path.endsWith('user/records')) { return ok({'expenses': [record(committed: committed)],
+          'incomes': [], 'debts': [], 'cash': 10, 'debt': 15000, 'receivable': 0, 'balance': -14990}); }
+        if (uri.path.endsWith('user/friend/request')) { return ok([{'id': 'q1',
+          'sender': {'id': 'other', 'username': 'siti'}, 'receiver': {'id': 'me', 'username': 'adrian'}}]); }
+        if (uri.path.endsWith('user/friend')) { return ok([{'id': 'friend', 'username': 'budi', 'status': 'accepted'}]); }
+        if (uri.path.endsWith('debt/owed')) { return ok({'debts': [debt()]}); }
         return ok({'debts': []});
       })), MemoryStore());
     controller.state = SessionState.signedIn;

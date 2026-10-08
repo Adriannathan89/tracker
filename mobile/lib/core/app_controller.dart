@@ -21,9 +21,9 @@ class AppController extends ChangeNotifier {
   int _generation = 0;
   int _loadRevision = 0;
   bool _disposed = false;
-  void _notify() { if (!_disposed) notifyListeners(); }
+  void _notify() { if (!_disposed) { notifyListeners(); } }
   void _expired() {
-    if (!api.sessionExpired.value) return;
+    if (!api.sessionExpired.value) { return; }
     _generation++;
     loading = false; error = null;
     profile = null; overview = null; friends = []; requests = []; owned = []; owed = [];
@@ -45,8 +45,8 @@ class AppController extends ChangeNotifier {
     _notify();
   }
   Future<void> authenticate(String username, String password, {bool register = false}) async {
-    if (register) await api.request('POST', 'user/register',
-        body: {'username': username, 'password': password});
+    if (register) { await api.request('POST', 'user/register',
+        body: {'username': username, 'password': password}); }
     await api.login(username, password);
     state = SessionState.signedIn;
     _notify();
@@ -63,7 +63,7 @@ class AppController extends ChangeNotifier {
         api.request('GET', 'user/friend'), api.request('GET', 'user/friend/request'),
         api.request('GET', 'debt'), api.request('GET', 'debt/owed'),
       ]);
-      if (_disposed || generation != _generation || revision != _loadRevision) return;
+      if (_disposed || generation != _generation || revision != _loadRevision) { return; }
       final nextProfile = Profile.fromJson(object(data[0]));
       final nextOverview = Overview.fromJson(object(data[1]));
       final nextFriends = objects(data[2]).map(Friend.fromJson).toList();
@@ -72,7 +72,7 @@ class AppController extends ChangeNotifier {
       final nextOwed = objects(object(data[5])['debts']).map(Debt.fromJson).toList();
       profile = nextProfile; overview = nextOverview; friends = nextFriends;
       requests = nextRequests; owned = nextOwned; owed = nextOwed;
-    } catch (e) { if (!_disposed && generation == _generation && revision == _loadRevision) error = e.toString(); }
+    } catch (e) { if (!_disposed && generation == _generation && revision == _loadRevision) { error = e.toString(); } }
     finally { if (!_disposed && generation == _generation && revision == _loadRevision) { loading = false; _notify(); } }
   }
   Future<void> mutate(String method, String path, {Object? body}) async {

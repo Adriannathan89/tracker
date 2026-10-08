@@ -34,18 +34,18 @@ class _RecordDetailState extends State<RecordDetail> {
         'recordId': widget.record.id, 'category': _primary, 'secondaryCategory': _secondary,
       });
       if (mounted) { Navigator.pop(context); toast(context, 'Catatan berhasil dikonfirmasi.'); }
-    } catch (e) { if (mounted) setState(() => _error = e.toString()); }
-    finally { if (mounted) setState(() => _busy = false); }
+    } catch (e) { if (mounted) { setState(() => _error = e.toString()); } }
+    finally { if (mounted) { setState(() => _busy = false); } }
   }
   Future<void> _delete() async {
-    if (!await confirm(context, 'Hapus draft?', 'Catatan ini akan dihapus permanen.')) return;
-    if (!mounted) return;
+    if (!await confirm(context, 'Hapus draft?', 'Catatan ini akan dihapus permanen.')) { return; }
+    if (!mounted) { return; }
     setState(() { _busy = true; _error = null; });
     try {
       await widget.controller.mutate('DELETE', 'user/record/${widget.record.id}');
-      if (mounted) Navigator.pop(context);
-    } catch (e) { if (mounted) setState(() => _error = e.toString()); }
-    finally { if (mounted) setState(() => _busy = false); }
+      if (mounted) { Navigator.pop(context); }
+    } catch (e) { if (mounted) { setState(() => _error = e.toString()); } }
+    finally { if (mounted) { setState(() => _busy = false); } }
   }
   @override
   Widget build(BuildContext context) {

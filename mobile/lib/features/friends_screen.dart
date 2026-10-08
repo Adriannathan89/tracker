@@ -27,22 +27,22 @@ class _FriendsScreenState extends State<FriendsScreen> {
     setState(() { _searching = true; _error = null; });
     try {
       final result = await widget.controller.api.request('POST', 'user/friend/search', body: {'name': _search.text.trim()});
-      if (mounted && revision == _searchRevision) setState(() => _results = objects(result).map(Friend.fromJson).toList());
-    } catch (e) { if (mounted && revision == _searchRevision) setState(() => _error = e.toString()); }
-    finally { if (mounted && revision == _searchRevision) setState(() => _searching = false); }
+      if (mounted && revision == _searchRevision) { setState(() => _results = objects(result).map(Friend.fromJson).toList()); }
+    } catch (e) { if (mounted && revision == _searchRevision) { setState(() => _error = e.toString()); } }
+    finally { if (mounted && revision == _searchRevision) { setState(() => _searching = false); } }
   }
   Future<void> _action(String method, String path, Object body, String message) async {
-    if (_busy) return;
+    if (_busy) { return; }
     setState(() { _busy = true; _error = null; });
     try {
       await widget.controller.mutate(method, path, body: body);
-      if (mounted) { toast(context, message); if (_results != null) await _find(); }
-    } catch (e) { if (mounted) setState(() => _error = e.toString()); }
-    finally { if (mounted) setState(() => _busy = false); }
+      if (mounted) { toast(context, message); if (_results != null) { await _find(); } }
+    } catch (e) { if (mounted) { setState(() => _error = e.toString()); } }
+    finally { if (mounted) { setState(() => _busy = false); } }
   }
   Future<void> _pay(Debt d) async {
-    if (!await confirm(context, 'Konfirmasi pembayaran', 'Tandai utang ${rupiah(d.amount)} kepada ${d.owner} sebagai lunas? Saldo kedua akun akan diperbarui.')) return;
-    if (!mounted) return;
+    if (!await confirm(context, 'Konfirmasi pembayaran', 'Tandai utang ${rupiah(d.amount)} kepada ${d.owner} sebagai lunas? Saldo kedua akun akan diperbarui.')) { return; }
+    if (!mounted) { return; }
     await _action('PUT', 'debt/finish', {'debtId': d.id}, 'Utang berhasil dilunasi.');
   }
   @override

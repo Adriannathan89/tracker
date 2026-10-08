@@ -25,8 +25,8 @@ class _AuthScreenState extends State<AuthScreen> {
     try {
       await widget.controller.authenticate(_username.text.trim(), _password.text, register: _register);
       if (mounted) { _password.clear(); _confirmation.clear(); }
-    } catch (e) { if (mounted) setState(() { _error = e.toString(); _failures++; }); }
-    finally { if (mounted) setState(() => _busy = false); }
+    } catch (e) { if (mounted) { setState(() { _error = e.toString(); _failures++; }); } }
+    finally { if (mounted) { setState(() => _busy = false); } }
   }
   @override
   Widget build(BuildContext context) => Scaffold(body: SafeArea(child: ListView(children: [
@@ -61,7 +61,7 @@ class _AuthScreenState extends State<AuthScreen> {
               tooltip: _obscure ? 'Tampilkan password' : 'Sembunyikan password',
               onPressed: () => setState(() => _obscure = !_obscure), icon: Icon(_obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined))),
             validator: (v) => validatePassword(v, register: _register),
-            onFieldSubmitted: (_) { if (!_busy && !_register) _submit(); }),
+            onFieldSubmitted: (_) { if (!_busy && !_register) { _submit(); } }),
           AnimatedSize(duration: TrackerMotion.duration(context, TrackerMotion.quick),
             curve: Curves.easeOutCubic, alignment: Alignment.topCenter,
             child: _register ? Padding(padding: const EdgeInsets.only(top: 16),

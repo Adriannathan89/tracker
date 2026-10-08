@@ -97,7 +97,7 @@ class _AnimatedAmountState extends State<AnimatedAmount> with SingleTickerProvid
   @override
   void didUpdateWidget(covariant AnimatedAmount oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.value == widget.value) return;
+    if (oldWidget.value == widget.value) { return; }
     _from = _visible; _to = widget.value;
     if (TrackerMotion.reduced(context) || !TickerMode.of(context)) {
       _controller.stop(); _controller.value = 1;
@@ -128,7 +128,7 @@ class _ShakeFeedbackState extends State<ShakeFeedback> with SingleTickerProvider
   @override
   void didUpdateWidget(covariant ShakeFeedback oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.trigger != widget.trigger && !TrackerMotion.reduced(context)) _controller.forward(from: 0);
+    if (oldWidget.trigger != widget.trigger && !TrackerMotion.reduced(context)) { _controller.forward(from: 0); }
   }
   @override
   void dispose() { _controller.dispose(); super.dispose(); }

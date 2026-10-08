@@ -23,7 +23,7 @@ class _RecordsScreenState extends State<RecordsScreen> {
     final filtered = filterRecords(records, query: _search.text, type: _type, month: _month, draftsOnly: _drafts);
     final months = records.map((r) => DateTime(r.date.year, r.date.month)).toSet().toList()
       ..sort((a, b) => b.compareTo(a));
-    if (_month != null && !months.contains(_month)) months.add(_month!);
+    if (_month != null && !months.contains(_month)) { months.add(_month!); }
     final draftCount = records.where((r) => !r.isCommitted).length;
     return PageBody(controller: widget.controller, children: [
       const Text('Semua catatan keuanganmu.', style: TextStyle(fontSize: 15)), const SizedBox(height: 18),
