@@ -6,6 +6,7 @@ import '../core/app_controller.dart';
 import '../core/models.dart';
 import '../ui/theme.dart';
 import '../ui/widgets.dart';
+import '../ui/motion.dart';
 
 class AddRecordScreen extends StatefulWidget {
   const AddRecordScreen({super.key, required this.controller});
@@ -19,10 +20,13 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
   var _date = DateTime.now();
   bool _details = false, _busy = false;
   String? _error;
+  int _failures = 0;
   @override
   void dispose() { _amount.dispose(); _title.dispose(); _description.dispose(); super.dispose(); }
   Future<void> _save() async {
-    if (!_form.currentState!.validate() || parseAmount(_amount.text) == null) return;
+    if (!_form.currentState!.validate() || parseAmount(_amount.text) == null) {
+      setState(() => _failures++); return;
+    }
     setState(() { _busy = true; _error = null; });
     try {
       await widget.controller.mutate('POST', 'user/record', body: {
@@ -31,7 +35,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
       });
       if (!mounted) return;
       Navigator.pop(context, true);
-    } catch (e) { if (mounted) setState(() => _error = e.toString()); }
+    } catch (e) { if (mounted) setState(() { _error = e.toString(); _failures++; }); }
     finally { if (mounted) setState(() => _busy = false); }
   }
   @override
@@ -45,6 +49,8 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
             const SizedBox(height: 14), Text(_details ? rupiah(parseAmount(_amount.text) ?? 0) : 'Berapa jumlahnya?',
               style: const TextStyle(color: lime, fontSize: 28, fontWeight: FontWeight.w800)),
           ])), const SizedBox(height: 24),
+        MotionEntrance(replayKey: _details, duration: TrackerMotion.quick,
+          child: ShakeFeedback(trigger: _failures, child: Column(children: [
         if (!_details) ...[
           TextFormField(controller: _amount, autofocus: true,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -53,7 +59,9 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
             onChanged: (_) => setState(() => _error = null)),
           const SizedBox(height: 12), const Text('Gunakan koma untuk desimal, tanpa pemisah ribuan.'),
           const SizedBox(height: 28), BusyButton(busy: false, label: 'Lanjutkan', onPressed: () {
-            if (parseAmount(_amount.text) == null) { setState(() => _error = 'Masukkan jumlah positif dengan maksimal 2 angka desimal.'); return; }
+            if (parseAmount(_amount.text) == null) {
+              setState(() { _error = 'Masukkan jumlah positif dengan maksimal 2 angka desimal.'; _failures++; }); return;
+            }
             FocusScope.of(context).unfocus(); setState(() { _details = true; _error = null; });
           }),
         ] else Form(key: _form, child: Column(children: [
@@ -77,5 +85,6 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
         ])),
         if (_error != null) Padding(padding: const EdgeInsets.only(top: 16),
           child: Text(_error!, style: TextStyle(color: Theme.of(context).colorScheme.error))),
+        ]))),
       ]))))));
 }

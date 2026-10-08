@@ -9,6 +9,7 @@ import 'features/profile_screen.dart';
 import 'features/records_screen.dart';
 import 'ui/theme.dart';
 import 'ui/widgets.dart';
+import 'ui/motion.dart';
 
 class TrackerApp extends StatelessWidget {
   const TrackerApp({super.key, required this.controller});
@@ -21,6 +22,8 @@ class TrackerApp extends StatelessWidget {
       locale: const Locale('id', 'ID'), supportedLocales: const [Locale('id', 'ID'), Locale('en', 'US')],
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       theme: trackerTheme(false), darkTheme: trackerTheme(true),
+      themeAnimationDuration: TrackerMotion.duration(context, TrackerMotion.entrance),
+      themeAnimationCurve: Curves.easeOutCubic,
       themeMode: controller.dark ? ThemeMode.dark : ThemeMode.light,
       home: switch (controller.state) {
         SessionState.signedOut => AuthScreen(controller: controller),
@@ -55,7 +58,8 @@ class _TrackerShellState extends State<TrackerShell> {
   }
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text(_labels[_tab]), actions: [
+    appBar: AppBar(title: AnimatedSwitcher(duration: TrackerMotion.duration(context, TrackerMotion.quick),
+      child: Text(_labels[_tab], key: ValueKey(_tab))), actions: [
       IconButton(tooltip: widget.controller.dark ? 'Mode terang' : 'Mode gelap',
         onPressed: () async {
           try { await widget.controller.toggleTheme(); }
@@ -63,7 +67,7 @@ class _TrackerShellState extends State<TrackerShell> {
         }, icon: Icon(widget.controller.dark ? Icons.light_mode_outlined : Icons.dark_mode_outlined)),
     ]),
     body: SafeArea(top: false, child: Center(child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 760),
-      child: IndexedStack(index: _tab, children: [
+      child: MotionTabs(index: _tab, children: [
         DashboardScreen(controller: widget.controller, onAdd: _add, onRecords: () => _select(1), onFriends: () => _select(2)),
         RecordsScreen(controller: widget.controller), FriendsScreen(controller: widget.controller), ProfileScreen(controller: widget.controller),
       ])))),
@@ -78,7 +82,11 @@ class _TrackerShellState extends State<TrackerShell> {
   );
   Widget _nav(int index, IconData icon) => Expanded(child: Tooltip(message: _labels[index],
     child: InkWell(onTap: () => _select(index), borderRadius: BorderRadius.circular(16),
-      child: Semantics(selected: _tab == index, button: true, child: Padding(padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Semantics(selected: _tab == index, button: true, child: AnimatedContainer(
+        duration: TrackerMotion.duration(context, TrackerMotion.quick),
+        curve: Curves.easeOutCubic, padding: const EdgeInsets.symmetric(vertical: 8),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(16),
+          color: _tab == index ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.12) : Colors.transparent),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Icon(icon, color: _tab == index ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.onSurfaceVariant),
           const SizedBox(height: 4), Text(_labels[index], maxLines: 1, overflow: TextOverflow.ellipsis,

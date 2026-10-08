@@ -78,6 +78,10 @@ Build kembali; Gradle otomatis memakai key tersebut. Simpan key yang sama untuk 
 
 ## Verifikasi
 
+Animasi mengikuti karakter web: fade/slide kartu utama dan form, count-up saldo/ringkasan (400 ms), transisi tab dan tahap catatan (220 ms), shake validasi (360 ms), serta sheet masuk/keluar (320/220 ms). Tab mempertahankan state dan membisukan ticker pada halaman tersembunyi. Grafik menggunakan repaint boundary dan hanya repaint saat datanya berubah. Animasi berhenti setelah selesai; pengaturan Android untuk mengurangi animasi dihormati. Angka untuk pembaca layar selalu menggunakan nilai akhir, bukan setiap frame count-up.
+
+Kelancaran Android belum diukur di perangkat. Setelah build, jalankan `flutter run --profile` pada HP fisik dan periksa Flutter DevTools Performance saat berpindah tab cepat, mengetik, refresh data, dan membuka sheet. Periksa juga ukuran teks besar serta pengaturan aksesibilitas Remove animations. Target anggaran frame sekitar 16,7 ms pada 60 Hz atau 8,3 ms pada 120 Hz; hasil debug/emulator bukan bukti performa release. Lihat [panduan performa Flutter](https://docs.flutter.dev/perf/best-practices).
+
 Tes source mencakup parsing DTO/filter/nominal, persistensi dan kedaluwarsa cookie, refresh bersamaan, login gagal, session habis, network failure dan alur widget. Di lingkungan implementasi saat ini Flutter/Dart/Android SDK tidak tersedia dan unduhan terminal gagal DNS, sehingga `flutter analyze`, `flutter test`, dan build APK belum dijalankan. APK belum dihasilkan atau diuji pada perangkat. Jalankan perintah di atas atau workflow untuk validasi tersebut; jangan menganggap pemeriksaan statis sebagai hasil kompilasi.
 
 Setelah build, cek pada HP: daftar/login, restart aplikasi, create/commit kategori, pencarian dan filter, teman dengan dua akun, pinjam/bayar, rename, dark mode, Discord bila bot dikonfigurasi, logout, koneksi terputus dan refresh setelah 10 menit. Integrasi backend/VPS dan Discord membutuhkan server yang berjalan.

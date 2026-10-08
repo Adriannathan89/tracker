@@ -3,8 +3,10 @@ import 'package:intl/intl.dart';
 import '../core/app_controller.dart';
 import '../core/models.dart';
 import 'theme.dart';
+import 'motion.dart';
 
-String rupiah(num value) => 'Rp ${NumberFormat('#,##0.##', 'id_ID').format(value)}';
+final _rupiahFormatter = NumberFormat('#,##0.##', 'id_ID');
+String rupiah(num value) => 'Rp ${_rupiahFormatter.format(value)}';
 String dateLabel(DateTime date) => DateFormat('d MMM yyyy', 'id_ID').format(date);
 String monthLabel(DateTime date) => DateFormat('MMMM yyyy', 'id_ID').format(date);
 void toast(BuildContext context, String message) {
@@ -26,9 +28,10 @@ class PageBody extends StatelessWidget {
     onRefresh: controller.reload,
     child: ListView(padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
       physics: const AlwaysScrollableScrollPhysics(), children: [
-        if (controller.loading) const Padding(padding: EdgeInsets.only(bottom: 12), child: LinearProgressIndicator()),
-        if (controller.error != null) ErrorCard(message: controller.error!, onRetry: controller.reload),
-        ...children,
+        if (controller.loading) const Padding(key: ValueKey('loading'), padding: EdgeInsets.only(bottom: 12), child: LinearProgressIndicator()),
+        if (controller.error != null) ErrorCard(key: const ValueKey('error'), message: controller.error!, onRetry: controller.reload),
+        for (var i = 0; i < children.length; i++)
+          KeyedSubtree(key: ValueKey('content-$i'), child: children[i]),
       ]),
   );
 }
@@ -73,7 +76,8 @@ class StatCard extends StatelessWidget {
   Widget build(BuildContext context) => Card(child: Padding(padding: const EdgeInsets.all(16),
     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text(label, style: Theme.of(context).textTheme.bodySmall), const SizedBox(height: 8),
-      Text(rupiah(value), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: color)),
+      AnimatedAmount(value: value, format: rupiah,
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: color)),
     ])));
 }
 class RecordTile extends StatelessWidget {
@@ -105,5 +109,7 @@ class BusyButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) => SizedBox(width: double.infinity,
     child: FilledButton(onPressed: busy ? null : onPressed,
-      child: busy ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)) : Text(label)));
+      child: AnimatedSwitcher(duration: TrackerMotion.duration(context, TrackerMotion.quick),
+        child: busy ? const SizedBox(key: ValueKey('busy'), width: 20, height: 20,
+          child: CircularProgressIndicator(strokeWidth: 2)) : Text(label, key: ValueKey(label)))));
 }

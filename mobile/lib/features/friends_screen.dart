@@ -5,6 +5,7 @@ import '../core/models.dart';
 import '../ui/theme.dart';
 import '../ui/widgets.dart';
 import 'add_debt_sheet.dart';
+import '../ui/motion.dart';
 
 class FriendsScreen extends StatefulWidget {
   const FriendsScreen({super.key, required this.controller});
@@ -97,6 +98,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
           const SizedBox(height: 4), Text('Utangmu: ${rupiah(c.friendDebt(f.id))}', style: const TextStyle(color: expenseColor)),
           const SizedBox(height: 12), OutlinedButton.icon(onPressed: _busy ? null : () => showModalBottomSheet<void>(
             context: context, useSafeArea: true, isScrollControlled: true,
+            sheetAnimationStyle: AnimationStyle(duration: TrackerMotion.duration(context, TrackerMotion.entrance),
+              reverseDuration: TrackerMotion.duration(context, TrackerMotion.quick)),
             builder: (_) => AddDebtSheet(controller: c, friend: f)), icon: const Icon(Icons.add), label: const Text('Tambah piutang')),
         ]))))),
       const SectionTitle('Utang yang perlu dibayar'),

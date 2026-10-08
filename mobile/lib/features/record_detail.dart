@@ -3,9 +3,12 @@ import '../core/app_controller.dart';
 import '../core/models.dart';
 import '../ui/theme.dart';
 import '../ui/widgets.dart';
+import '../ui/motion.dart';
 
 Future<void> openRecord(BuildContext context, AppController controller, TrackerRecord record) =>
   showModalBottomSheet<void>(context: context, isScrollControlled: true, useSafeArea: true,
+    sheetAnimationStyle: AnimationStyle(duration: TrackerMotion.duration(context, TrackerMotion.entrance),
+      reverseDuration: TrackerMotion.duration(context, TrackerMotion.quick)),
     builder: (context) => RecordDetail(controller: controller, record: record));
 class RecordDetail extends StatefulWidget {
   const RecordDetail({super.key, required this.controller, required this.record});

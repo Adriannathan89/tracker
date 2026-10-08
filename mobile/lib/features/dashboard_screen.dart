@@ -3,6 +3,8 @@ import '../core/app_controller.dart';
 import '../ui/theme.dart';
 import '../ui/widgets.dart';
 import 'record_detail.dart';
+import '../ui/motion.dart';
+import 'package:flutter/foundation.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key, required this.controller, required this.onAdd, required this.onRecords, required this.onFriends});
@@ -16,17 +18,18 @@ class DashboardScreen extends StatelessWidget {
     return PageBody(controller: controller, children: [
       Text('Halo, ${controller.profile?.username ?? 'kamu'} 👋', style: const TextStyle(fontWeight: FontWeight.w600)),
       const SizedBox(height: 6), const Text('Keuanganmu, dalam kendali.', style: TextStyle(fontSize: 23, fontWeight: FontWeight.w800)),
-      const SizedBox(height: 20), Container(padding: const EdgeInsets.all(24),
+      const SizedBox(height: 20), MotionEntrance(child: Container(padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(color: ink, borderRadius: BorderRadius.circular(24)),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           const Text('Saldo Bersih', style: TextStyle(color: Colors.white60, fontWeight: FontWeight.w600, letterSpacing: 1)),
-          const SizedBox(height: 12), Text(data == null ? '—' : rupiah(data.balance),
-            style: const TextStyle(color: lime, fontSize: 34, fontWeight: FontWeight.w800, letterSpacing: -1)),
+          const SizedBox(height: 12), data == null ? const Text('—', style: TextStyle(color: lime, fontSize: 34))
+            : AnimatedAmount(value: data.balance, format: rupiah,
+              style: const TextStyle(color: lime, fontSize: 34, fontWeight: FontWeight.w800, letterSpacing: -1)),
           const SizedBox(height: 18), Text(monthLabel(month), style: const TextStyle(color: Colors.white60)),
           const SizedBox(height: 12), SizedBox(height: 58, width: double.infinity,
-            child: CustomPaint(painter: _TrendPainter(data?.records.where((r) => r.isCommitted)
-              .take(14).toList().reversed.map((r) => r.type == 'income' ? r.amount : -r.amount).toList() ?? []))),
-        ])),
+            child: RepaintBoundary(child: CustomPaint(painter: _TrendPainter(data?.records.where((r) => r.isCommitted)
+              .take(14).toList().reversed.map((r) => r.type == 'income' ? r.amount : -r.amount).toList() ?? [])))),
+        ]))),
       const SizedBox(height: 12), StatCard('Uang tunai', data?.cash ?? 0),
       const SizedBox(height: 12), LayoutBuilder(builder: (context, constraints) {
         final stats = [StatCard('Piutang', data?.receivable ?? 0, color: incomeColor),
@@ -71,5 +74,5 @@ class _TrendPainter extends CustomPainter {
     canvas.drawPath(path, Paint()..color = lime..strokeWidth = 2.5..style = PaintingStyle.stroke);
   }
   @override
-  bool shouldRepaint(covariant _TrendPainter oldDelegate) => true;
+  bool shouldRepaint(covariant _TrendPainter oldDelegate) => !listEquals(changes, oldDelegate.changes);
 }

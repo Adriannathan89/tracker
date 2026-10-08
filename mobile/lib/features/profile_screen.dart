@@ -5,6 +5,7 @@ import '../ui/theme.dart';
 import '../ui/widgets.dart';
 import 'discord_sheet.dart';
 import 'rename_dialog.dart';
+import '../ui/motion.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key, required this.controller});
@@ -59,7 +60,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               }
             }, child: const Text('Putuskan koneksi')),
           ] else ...[const SizedBox(height: 20), FilledButton.icon(onPressed: _busy ? null : () => showModalBottomSheet<void>(
-            context: context, useSafeArea: true, isScrollControlled: true, builder: (_) => DiscordSheet(controller: c)),
+            context: context, useSafeArea: true, isScrollControlled: true,
+            sheetAnimationStyle: AnimationStyle(duration: TrackerMotion.duration(context, TrackerMotion.entrance),
+              reverseDuration: TrackerMotion.duration(context, TrackerMotion.quick)),
+            builder: (_) => DiscordSheet(controller: c)),
             icon: const Icon(Icons.link), label: const Text('Hubungkan Discord'))],
         ]))),
       if (_busy) const Padding(padding: EdgeInsets.only(top: 16), child: LinearProgressIndicator()),
