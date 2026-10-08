@@ -88,6 +88,8 @@ class _AnimatedAmountState extends State<AnimatedAmount> with SingleTickerProvid
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    // Keep compatibility with Flutter 3.35.7, which has no TickerMode.valuesOf.
+    // ignore: deprecated_member_use
     if (TrackerMotion.reduced(context) || !TickerMode.of(context)) {
       _controller.stop(); _controller.value = 1; _started = true;
     } else if (!_started) {
@@ -99,6 +101,8 @@ class _AnimatedAmountState extends State<AnimatedAmount> with SingleTickerProvid
     super.didUpdateWidget(oldWidget);
     if (oldWidget.value == widget.value) { return; }
     _from = _visible; _to = widget.value;
+    // Keep compatibility with Flutter 3.35.7, which has no TickerMode.valuesOf.
+    // ignore: deprecated_member_use
     if (TrackerMotion.reduced(context) || !TickerMode.of(context)) {
       _controller.stop(); _controller.value = 1;
     } else { _controller.forward(from: 0); }
