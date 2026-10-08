@@ -1,0 +1,26 @@
+[package]
+name = "tracker-infrastructure"
+version.workspace = true
+edition.workspace = true
+[dependencies]
+tracker-domain.workspace = true
+tracker-application.workspace = true
+furnace-rs.workspace = true
+furnace-rs-persistence.workspace = true
+sea-orm = { version = "=2.0.0", default-features = false, features = ["sqlx-postgres", "runtime-tokio-rustls", "with-uuid", "with-chrono", "with-rust_decimal", "macros"] }
+serde.workspace = true
+serde_json.workspace = true
+uuid.workspace = true
+chrono.workspace = true
+rust_decimal.workspace = true
+async-trait.workspace = true
+tokio.workspace = true
+sha2 = "0.10"
+rand = "0.8"
+libc = "0.2"
+reqwest = { version = "0.13", default-features = false, features = ["json", "rustls"] }
+ed25519-dalek = "2.2"
+
+[dev-dependencies]
+sqlx = { version = "=0.9.0", default-features = false, features = ["runtime-tokio", "tls-rustls-ring", "postgres"] }
+sea-orm = { version = "=2.0.0", default-features = false, features = ["mock"] }

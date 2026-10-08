@@ -1,0 +1,115 @@
+:host {
+  display: block;
+}
+
+app-spark-line {
+  color: var(--bw-lime);
+}
+
+.hero-card {
+  background: var(--bw-hero-bg);
+  border-radius: var(--bw-r-lg);
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+
+  /*
+    Hero card is always dark (--bw-hero-bg is near-black in light, elevated-dark in dark).
+    Define fixed warm-white text variables so they never flip with the theme.
+  */
+  --hero-fg: #f0efe9;
+  --hero-dim: rgba(240, 239, 233, 0.48);
+  --hero-ghost: rgba(240, 239, 233, 0.09);
+  --hero-muted: rgba(240, 239, 233, 0.56);
+  --hero-lime: rgba(181, 230, 14, 0.18);
+
+  color: var(--hero-fg);
+}
+
+.stat-card {
+  background: var(--bw-surface);
+  border: 1px solid var(--bw-border);
+  border-radius: var(--bw-r-md);
+  padding: 16px;
+}
+
+.bw-card {
+  background: var(--bw-surface);
+  border: 1px solid var(--bw-border);
+  border-radius: var(--bw-r-lg);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.chip-lime-dark {
+  background: var(--hero-lime);
+  color: var(--bw-lime);
+}
+
+.chip-ghost-dark {
+  background: var(--hero-ghost);
+  color: var(--hero-muted);
+}
+
+.icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--bw-sunken);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.quick-tile {
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--bw-border);
+  background: var(--bw-surface);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+  transition: transform 0.1s ease, background 0.15s;
+}
+
+.quick-tile:hover {
+  transform: scale(0.98);
+}
+
+.quick-tile:active {
+  transform: scale(0.96);
+}
+
+.friend-debt-row {
+  border-top: 1px solid var(--bw-border);
+}
+
+.tx-row {
+  border-top: 1px solid var(--bw-border);
+}
+
+@keyframes countUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-count {
+  animation: countUp 0.6s ease both;
+}

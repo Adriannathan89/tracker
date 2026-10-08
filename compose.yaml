@@ -1,0 +1,76 @@
+name: tracker
+services:
+  frontend:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks: [edge]
+    stop_grace_period: 15s
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-tracker}:${POSTGRES_PASSWORD:-tracker}@postgres:5432/${POSTGRES_DB:-tracker}"
+      TOKEN_SECRET: "${TOKEN_SECRET:-tracker-local-development-secret-change-me}"
+      PUBLIC_ORIGIN: "${PUBLIC_ORIGIN:-http://localhost:8080}"
+      COOKIE_SECURE: "${COOKIE_SECURE:-false}"
+      FURNACE_TRACKER__DISCORD__BOT_TOKEN: "${DISCORD_BOT_TOKEN:-}"
+      FURNACE_TRACKER__DISCORD__CLIENT_ID: "${DISCORD_CLIENT_ID:-}"
+      FURNACE_TRACKER__DISCORD__PUBLIC_KEY: "${DISCORD_PUBLIC_KEY:-}"
+      FURNACE_TRACKER__DISCORD__BOT_USERNAME: "${DISCORD_BOT_USERNAME:-Tracker}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [edge, database]
+    stop_grace_period: 30s
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER:-tracker}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-tracker}"
+      POSTGRES_DB: "${POSTGRES_DB:-tracker}"
+    volumes:
+      - tracker_postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks: [database]
+    stop_grace_period: 30s
+  training:
+    profiles: [training]
+    build:
+      context: .
+      dockerfile: training/Dockerfile
+    volumes:
+      - ./models:/workspace/models
+      - ./backend/crates/infrastructure/tests/fixtures:/workspace/backend/crates/infrastructure/tests/fixtures
+    networks: [edge]
+  backend-tests:
+    profiles: [test]
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+      target: tests
+    environment:
+      TRACKER_TEST_DATABASE_URL: "postgresql://${POSTGRES_USER:-tracker}:${POSTGRES_PASSWORD:-tracker}@postgres:5432/${POSTGRES_DB:-tracker}_test"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [database]
+volumes:
+  tracker_postgres:
+networks:
+  edge:
+  database:
+    internal: true

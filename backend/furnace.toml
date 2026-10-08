@@ -1,0 +1,27 @@
+# Loaded by Furnace::burn from the working directory.
+[server]
+host = "0.0.0.0"
+port = 8080
+
+[server.cors]
+origins = ["${PUBLIC_ORIGIN}"]
+methods = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+allowed_headers = ["content-type"]
+credentials = true
+max_age_seconds = 600
+
+[passport]
+secret = "${TOKEN_SECRET}"
+algorithms = ["HS256"]
+
+[persistence.seaorm]
+url = "${DATABASE_URL}"
+max_connections = 10
+connect_timeout_seconds = 10
+acquire_timeout_seconds = 10
+sqlx_logging = false
+
+[tracker]
+public_origin = "${PUBLIC_ORIGIN}"
+cookie_secure = "${COOKIE_SECURE}"
+model_path = "../models/transaction-model.json"

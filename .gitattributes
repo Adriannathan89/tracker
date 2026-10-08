@@ -1,0 +1,3 @@
+# Preserve exact dataset/model bytes used by training provenance and checksums.
+training/data/*.csv -text
+models/*.json -text

@@ -1,0 +1,392 @@
+@import 'tailwindcss';
+
+@theme {
+  /* Surfaces */
+  --color-bw-bg:           var(--bw-bg);
+  --color-bw-surface:      var(--bw-surface);
+  --color-bw-elevated:     var(--bw-elevated);
+  --color-bw-sunken:       var(--bw-sunken);
+
+  /* Borders */
+  --color-bw-border:        var(--bw-border);
+  --color-bw-border-strong: var(--bw-border-strong);
+
+  /* Ink (text layers) */
+  --color-bw-ink:    var(--bw-ink);
+  --color-bw-ink-2:  var(--bw-ink-2);
+  --color-bw-ink-3:  var(--bw-ink-3);
+  --color-bw-ink-4:  var(--bw-ink-4);
+
+  /* Accents */
+  --color-bw-lime:         var(--bw-lime);
+  --color-bw-lime-soft:    var(--bw-lime-soft);
+  --color-bw-lime-ink:     var(--bw-lime-ink);
+  --color-bw-lime-alpha:   var(--bw-lime-alpha);
+  --color-bw-emerald:      var(--bw-emerald);
+  --color-bw-emerald-soft: var(--bw-emerald-soft);
+  --color-bw-emerald-ink:  var(--bw-emerald-ink);
+  --color-bw-amber:        var(--bw-amber);
+  --color-bw-amber-soft:   var(--bw-amber-soft);
+  --color-bw-red:          var(--bw-red);
+  --color-bw-red-soft:     var(--bw-red-soft);
+  --color-bw-green:        var(--bw-green);
+  --color-bw-green-soft:   var(--bw-green-soft);
+  --color-bw-purple:       var(--bw-purple);
+  --color-bw-purple-soft:  var(--bw-purple-soft);
+  --color-bw-on-ink:       var(--bw-on-ink);
+  --color-bw-on-ink-dim:   var(--bw-on-ink-dim);
+  --color-bw-on-ink-ghost: var(--bw-on-ink-ghost);
+  --color-bw-on-ink-muted: var(--bw-on-ink-muted);
+  --color-bw-on-ink-soft:  var(--bw-on-ink-soft);
+
+  /* Typography */
+  --font-sans: var(--bw-font-sans);
+  --font-mono: var(--bw-font-mono);
+}
+
+/* ── Light mode tokens ─────────────────────────────────────── */
+:root {
+  /* Surfaces — warm parchment hierarchy */
+  --bw-bg:       #f0efe9;   /* warm cream canvas */
+  --bw-surface:  #ffffff;   /* pure white cards */
+  --bw-elevated: #f7f6f0;   /* slightly warm elevated */
+  --bw-sunken:   #e5e3d9;   /* clearly recessed */
+
+  /* Borders */
+  --bw-border:        #d8d5cb;
+  --bw-border-strong: #c2bfb1;
+
+  /* Ink (text) */
+  --bw-ink:   #0a0a08;
+  --bw-ink-2: #46433c;
+  --bw-ink-3: #857f73;
+  --bw-ink-4: #b4b0a2;
+
+  /* Lime accent */
+  --bw-lime:       #b5e60e;
+  --bw-lime-soft:  #eaf9c0;
+  --bw-lime-ink:   #496203;
+  --bw-lime-alpha: rgba(181,230,14,0.14);
+
+  /* Emerald accent — darker green for debt modal */
+  --bw-emerald:       #166534;
+  --bw-emerald-soft:  #d1fae5;
+  --bw-emerald-ink:   #064e3b;
+
+  /* Semantic accents */
+  --bw-amber:      #f5b800;
+  --bw-amber-soft: #fff0bd;
+  --bw-red:        #e84a3a;
+  --bw-red-soft:   #fee0db;
+  --bw-green:      #2da966;
+  --bw-green-soft: #c8f1d8;
+  --bw-purple:     #a855f7;
+  --bw-purple-soft: rgba(168,85,247,0.12);
+
+  /* On-ink — text on dark/ink backgrounds */
+  --bw-on-ink:        #f0efe9;   /* warm white — mirrors dark-mode bg for cohesion */
+  --bw-on-ink-dim:    rgba(240,239,233,0.50);
+  --bw-on-ink-ghost:  rgba(240,239,233,0.08);
+  --bw-on-ink-muted:  rgba(240,239,233,0.62);
+  --bw-on-ink-soft:   rgba(240,239,233,0.68);
+
+  /* Shadows — natural warm-black depth */
+  --bw-shadow-sm:  0 1px 3px rgba(12,10,4,0.06);
+  --bw-shadow-md:  0 4px 16px rgba(12,10,4,0.08), 0 1px 4px rgba(12,10,4,0.04);
+  --bw-shadow-lg:  0 14px 36px rgba(12,10,4,0.10), 0 3px 8px rgba(12,10,4,0.05);
+  --bw-shadow-fab: 0 6px 18px rgba(12,10,4,0.22), 0 2px 5px rgba(12,10,4,0.14);
+
+  /* Hero card — always dark in light mode */
+  --bw-hero-bg: var(--bw-ink);
+
+  /* Focus ring */
+  --bw-ring-lime: rgba(181,230,14,0.36);
+
+  /* Radii */
+  --bw-r-sm:   8px;
+  --bw-r-md:   12px;
+  --bw-r-lg:   18px;
+  --bw-r-xl:   24px;
+  --bw-r-pill: 999px;
+
+  /* Typography */
+  --bw-font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --bw-font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+/* ── Dark mode tokens ──────────────────────────────────────── */
+.bw-dark {
+  /* Surfaces — distinct warm-charcoal hierarchy */
+  --bw-bg:       #0d0d0a;   /* near-black with faint warmth */
+  --bw-surface:  #151411;   /* clear step above bg */
+  --bw-elevated: #1c1b16;   /* well-defined elevation */
+  --bw-sunken:   #080806;   /* clearly below bg */
+
+  /* Borders */
+  --bw-border:        #242219;   /* subtle definition */
+  --bw-border-strong: #322e23;   /* visible separation */
+
+  /* Ink (text) — warm white mirroring light-mode bg */
+  --bw-ink:   #f0efe9;
+  --bw-ink-2: #b4b0a2;
+  --bw-ink-3: #7c7870;
+  --bw-ink-4: #4a4742;
+
+  /* Lime — more vivid to pop on dark */
+  --bw-lime:       #c8f534;
+  --bw-lime-soft:  #1b2d03;
+  --bw-lime-ink:   #deff5c;
+  --bw-lime-alpha: rgba(200,245,52,0.13);
+
+  /* Emerald accent — still readable on dark ink */
+  --bw-emerald:       #34d399;
+  --bw-emerald-soft:  #052e16;
+  --bw-emerald-ink:   #6ee7b7;
+
+  /* Semantic accents */
+  --bw-amber:      #ffc933;
+  --bw-amber-soft: #372d04;
+  --bw-red:        #ff6a5a;
+  --bw-red-soft:   #3a1510;
+  --bw-green:      #4cd089;
+  --bw-green-soft: #0f381e;
+  --bw-purple:     #c084fc;
+  --bw-purple-soft: rgba(192,132,252,0.15);
+
+  /* On-ink — text on bright (ink-colored) backgrounds in dark mode */
+  --bw-on-ink:        #0a0a08;   /* near-black — mirrors light-mode ink */
+  --bw-on-ink-dim:    rgba(10,10,8,0.50);
+  --bw-on-ink-ghost:  rgba(10,10,8,0.08);
+  --bw-on-ink-muted:  rgba(10,10,8,0.62);
+  --bw-on-ink-soft:   rgba(10,10,8,0.68);
+
+  /* Shadows — depth via black + lime glow for brand elements */
+  --bw-shadow-sm:  0 1px 3px rgba(0,0,0,0.30);
+  --bw-shadow-md:  0 4px 16px rgba(0,0,0,0.44), 0 1px 4px rgba(0,0,0,0.24);
+  --bw-shadow-lg:  0 14px 36px rgba(0,0,0,0.54), 0 3px 8px rgba(0,0,0,0.30);
+  --bw-shadow-fab: 0 6px 22px rgba(175,235,30,0.22), 0 2px 6px rgba(0,0,0,0.52);
+
+  /* Hero card — elevated dark so it stays premium in dark mode */
+  --bw-hero-bg: var(--bw-elevated);
+
+  /* Focus ring */
+  --bw-ring-lime: rgba(200,245,52,0.28);
+}
+
+/* ── Base ──────────────────────────────────────────────────── */
+html, body { height: 100%; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--bw-font-sans);
+  background: var(--bw-bg);
+  color: var(--bw-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.01em;
+}
+
+/* ── Theme transition ──────────────────────────────────────── */
+/*
+  Applied broadly but only to color-related properties.
+  Excludes elements mid-animation so keyframes run uninterrupted.
+*/
+:root {
+  --bw-theme-duration: 230ms;
+  --bw-theme-ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body,
+aside, header, nav, main, section, footer,
+input, button, a, span, div, svg {
+  transition:
+    background-color var(--bw-theme-duration) var(--bw-theme-ease),
+    border-color     var(--bw-theme-duration) var(--bw-theme-ease),
+    color            calc(var(--bw-theme-duration) - 20ms) var(--bw-theme-ease),
+    box-shadow       var(--bw-theme-duration) var(--bw-theme-ease);
+}
+
+/* Preserve animation freedom — don't let theme transition interfere */
+.animate-fade-slide-up,
+.animate-fade-in,
+.animate-shake,
+.animate-spin-in,
+.animate-count-up,
+.theme-icon,
+.theme-icon *,
+.icon-m,
+.icon-m * {
+  transition: none !important;
+}
+
+/* ── Animations ────────────────────────────────────────────── */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes shakeInput {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+@keyframes spinIn {
+  from { opacity: 0; transform: scale(0.6) rotate(-90deg); }
+  to   { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-slide-up { animation: fadeSlideUp 0.38s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-fade-in       { animation: fadeIn 0.28s ease both; }
+.animate-shake         { animation: shakeInput 0.4s ease; }
+.animate-spin-in       { animation: spinIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.animate-count-up      { animation: countUp 0.5s ease both; }
+
+/* ── Utilities ─────────────────────────────────────────────── */
+.mono {
+  font-family: var(--bw-font-mono);
+  font-feature-settings: "tnum";
+  letter-spacing: -0.02em;
+}
+
+/* ── Focus rings ───────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--bw-ring-lime);
+  outline-offset: 2px;
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────── */
+::-webkit-scrollbar              { width: 4px; height: 4px; }
+::-webkit-scrollbar-track        { background: transparent; }
+::-webkit-scrollbar-thumb        { background: var(--bw-border-strong); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover  { background: var(--bw-ink-3); }
+
+.bw-dark ::-webkit-scrollbar-thumb       { background: var(--bw-lime-alpha); }
+.bw-dark ::-webkit-scrollbar-thumb:hover { background: rgba(200,245,52,0.28); }
+
+/* ── Add Debt Modals ────────────────────────────────────────── */
+.add-debt-sheet-panel mat-bottom-sheet-container.mat-bottom-sheet-container {
+  padding: 0 !important;
+  background: var(--bw-surface) !important;
+  border-top-left-radius: 24px !important;
+  border-top-right-radius: 24px !important;
+  max-height: 92vh !important;
+  min-width: 100vw !important;
+  max-width: 100vw !important;
+  width: 100vw !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
+}
+
+.add-debt-dialog-panel .mat-mdc-dialog-container,
+.add-debt-dialog-panel .mdc-dialog__surface {
+  padding: 0 !important;
+  background: transparent !important;
+  border-radius: 24px !important;
+  overflow: hidden !important;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.18) !important;
+}
+
+/* ── Commit Record Modals ───────────────────────────────────── */
+.commit-record-sheet-panel mat-bottom-sheet-container.mat-bottom-sheet-container {
+  padding: 0 !important;
+  background: var(--bw-surface) !important;
+  border-top-left-radius: 24px !important;
+  border-top-right-radius: 24px !important;
+  max-height: 92vh !important;
+  min-width: 100vw !important;
+  max-width: 100vw !important;
+  width: 100vw !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
+}
+
+.commit-record-dialog-panel .mat-mdc-dialog-container,
+.commit-record-dialog-panel .mdc-dialog__surface {
+  padding: 0 !important;
+  background: transparent !important;
+  border-radius: 24px !important;
+  overflow: hidden !important;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.18) !important;
+}
+
+/* ── Commit Record Sheet Animations ─────────────────────────── */
+
+@keyframes sheet-dismiss {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes sheet-snap-back {
+  from {
+    transform: translateY(var(--drag-distance, 0));
+    opacity: calc(1 - var(--drag-distance, 0) / 120 * 0.15);
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes backdrop-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.commit-record-sheet-panel mat-bottom-sheet-container.closing {
+  animation: sheet-dismiss 200ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.commit-record-sheet-panel mat-bottom-sheet-container.snapping-back {
+  animation: sheet-snap-back 300ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* During drag, prevent scrolling and set will-change */
+.commit-record-sheet-panel mat-bottom-sheet-container {
+  will-change: transform, opacity;
+}
+
+.commit-record-sheet-panel.dragging {
+  overflow: hidden !important;
+}
+
+/* ── Discord Verify Modal ───────────────────────────────────── */
+.discord-verify-sheet-panel mat-bottom-sheet-container.mat-bottom-sheet-container {
+  padding: 0 !important;
+  background: var(--bw-surface) !important;
+  border-top-left-radius: 24px !important;
+  border-top-right-radius: 24px !important;
+  max-height: 92vh !important;
+  min-width: 100vw !important;
+  max-width: 100vw !important;
+  width: 100vw !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
+}
+
+.discord-verify-dialog-panel .mat-mdc-dialog-container,
+.discord-verify-dialog-panel .mdc-dialog__surface {
+  padding: 0 !important;
+  background: transparent !important;
+  border-radius: 24px !important;
+  overflow: hidden !important;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.18) !important;
+}

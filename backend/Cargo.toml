@@ -1,0 +1,33 @@
+[workspace]
+members = ["crates/domain", "crates/application", "crates/infrastructure", "crates/http"]
+resolver = "3"
+[workspace.package]
+edition = "2024"
+rust-version = "1.94"
+version = "0.1.0"
+[workspace.dependencies]
+tracker-domain = { path = "crates/domain" }
+tracker-application = { path = "crates/application" }
+tracker-infrastructure = { path = "crates/infrastructure" }
+tracker-http = { path = "crates/http" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+uuid = { version = "1", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+rust_decimal = { version = "1", features = ["serde-with-float"] }
+async-trait = "0.1"
+tokio = { version = "1", features = ["full"] }
+furnace-rs = { version = "=1.0.1", features = ["cookies", "jwt"] }
+furnace-rs-persistence = { version = "=1.0.1", features = ["sea-orm-postgres"] }
+[package]
+name = "tracker-backend"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+[dependencies]
+tracker-http.workspace = true
+tracker-application.workspace = true
+tracker-infrastructure.workspace = true
+furnace-rs.workspace = true
+furnace-rs-persistence.workspace = true
+tokio.workspace = true

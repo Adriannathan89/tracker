@@ -1,0 +1,10 @@
+[package]
+name = "tracker-application"
+version.workspace = true
+edition.workspace = true
+[dependencies]
+tracker-domain.workspace = true
+async-trait.workspace = true
+uuid.workspace = true
+chrono.workspace = true
+rust_decimal.workspace = true

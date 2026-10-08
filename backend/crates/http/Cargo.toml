@@ -1,0 +1,21 @@
+[package]
+name = "tracker-http"
+version.workspace = true
+edition.workspace = true
+[dependencies]
+tracker-domain.workspace = true
+tracker-application.workspace = true
+tracker-infrastructure.workspace = true
+furnace-rs.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+uuid.workspace = true
+chrono.workspace = true
+rust_decimal.workspace = true
+tokio.workspace = true
+[dev-dependencies]
+tower = { version = "0.5", features = ["util"] }
+async-trait.workspace = true
+furnace-rs-persistence.workspace = true
+sea-orm = { version = "=2.0.0", default-features = false, features = ["sqlx-postgres", "runtime-tokio-rustls"] }
+sqlx = { version = "=0.9.0", default-features = false, features = ["runtime-tokio", "tls-rustls-ring", "postgres"] }

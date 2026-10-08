@@ -1,0 +1,16 @@
+reference
+**/node_modules
+**/.angular
+**/dist
+**/target
+**/.git
+**/.venv
+**/__pycache__
+**/.pytest_cache
+**/.env
+**/.env.*
+local-docs
+.agents
+.codex
+.aws
+.superpowers
