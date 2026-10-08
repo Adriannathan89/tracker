@@ -24,3 +24,6 @@ training/data/feedback*.csv
 **/*.jks
 **/*.keystore
 **/key.properties
+/mobile/flutter-test.log
+/mobile/flutter-test-results.json
+/mobile/android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java

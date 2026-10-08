@@ -45,7 +45,20 @@ jobs:
           dart format lib test
           flutter analyze
       - name: Tests
-        run: flutter test --reporter expanded
+        shell: bash
+        run: |
+          set -o pipefail
+          flutter test --reporter expanded --file-reporter json:flutter-test-results.json 2>&1 | tee flutter-test.log
+      - name: Upload test diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tracker-test-diagnostics
+          path: |
+            mobile/flutter-test.log
+            mobile/flutter-test-results.json
+          if-no-files-found: warn
+          retention-days: 14
       - name: Build installable APK
         env:
           TRACKER_API_URL: ${{ inputs.api_url || 'https://tracker.adrianportofolio.my.id/api/' }}
