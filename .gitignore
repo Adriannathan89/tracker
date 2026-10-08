@@ -18,3 +18,9 @@
 .superpowers/
 app/src/environments/environment.generated.ts
 training/data/feedback*.csv
+**/.dart_tool/
+**/build/
+**/.flutter-plugins-dependencies
+**/*.jks
+**/*.keystore
+**/key.properties

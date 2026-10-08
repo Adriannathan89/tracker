@@ -1,0 +1,57 @@
+name: Tracker Android APK
+on:
+  workflow_dispatch:
+    inputs:
+      api_url:
+        description: HTTPS API URL including /api/
+        required: true
+        default: https://tracker.adrianportofolio.my.id/api/
+        type: string
+  pull_request:
+    paths:
+      - 'mobile/**'
+      - '.github/workflows/android.yml'
+permissions:
+  contents: read
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.35.7'
+          channel: stable
+          cache: true
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Format and analyze
+        run: |
+          dart format lib test
+          flutter analyze
+      - name: Tests
+        run: flutter test
+      - name: Build installable APK
+        env:
+          TRACKER_API_URL: ${{ inputs.api_url || 'https://tracker.adrianportofolio.my.id/api/' }}
+        run: |
+          case "$TRACKER_API_URL" in https://*) ;; *) echo 'HTTPS API required'; exit 1 ;; esac
+          flutter build apk --release --dart-define="TRACKER_API_URL=$TRACKER_API_URL"
+      - name: Upload APK and resolved dependency lock
+        uses: actions/upload-artifact@v4
+        with:
+          name: tracker-android
+          path: |
+            mobile/build/app/outputs/flutter-apk/*.apk
+            mobile/pubspec.lock
+          if-no-files-found: error
+          retention-days: 14

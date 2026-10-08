@@ -1,0 +1,17 @@
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+coverage/
+*.iml
+.idea/
+android/.gradle/
+android/local.properties
+android/key.properties
+android/gradlew
+android/gradlew.bat
+android/gradle/wrapper/gradle-wrapper.jar
+*.jks
+*.keystore
+# Commit pubspec.lock after the first successful flutter pub get.

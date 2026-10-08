@@ -1,10 +1,11 @@
 # Tracker
 
-Tracker is a monorepo containing the existing Angular app and a Rust backend built with [furnace-rs](https://github.com/Adriannathan89/furnace-rs). It preserves authentication, financial records, debts, friends, profiles, and optional Discord integration. This deployment starts with a fresh PostgreSQL database.
+Tracker is a monorepo containing the Angular web app, a Flutter Android client, and a Rust backend built with [furnace-rs](https://github.com/Adriannathan89/furnace-rs). It preserves authentication, financial records, debts, friends, profiles, and optional Discord integration. This deployment starts with a fresh PostgreSQL database.
 
 | Path | Purpose |
 | --- | --- |
 | `app/` | Angular 21 frontend, package/project name `tracker` |
+| `mobile/` | Flutter/Dart Android app, same Tracker API and mobile design |
 | `backend/crates/domain/` | Entities, decimal amounts, business validation |
 | `backend/crates/application/` | Use cases and repository/classifier/security ports |
 | `backend/crates/infrastructure/` | PostgreSQL, native trained inference, bcrypt/JWT, Discord |
@@ -19,6 +20,8 @@ Dependencies point inward. Domain and application have no Furnace or database de
 Framework and persistence dependencies pin the published crates.io packages to `=1.0.1`, with `backend/Cargo.lock` retained for locked builds. Local verification uses the published registry packages. SQLx is only a test fixture dependency; application database access goes through SeaORM.
 
 ## Run the full application
+
+For the Android client and APK build instructions, see [mobile/README.md](mobile/README.md). The Android app uses the same deployed backend at `https://tracker.adrianportofolio.my.id/api/` by default.
 
 Requirements: Docker Engine and Docker Compose v2.
 
