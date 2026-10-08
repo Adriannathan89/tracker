@@ -25,7 +25,9 @@ class _DiscordSheetState extends State<DiscordSheet> with WidgetsBindingObserver
   void dispose() { _timer?.cancel(); WidgetsBinding.instance.removeObserver(this); super.dispose(); }
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed && _code != null && _seconds > 0) _check();
+    if (state == AppLifecycleState.resumed && _code != null && _seconds > 0) {
+      _check();
+    }
   }
   Future<void> _generate() async {
     _timer?.cancel();
@@ -38,7 +40,9 @@ class _DiscordSheetState extends State<DiscordSheet> with WidgetsBindingObserver
         if (!mounted) { timer.cancel(); return; }
         setState(() {});
         if (_seconds == 0) { timer.cancel(); return; }
-        if (timer.tick % 5 == 0 && WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) _check();
+        if (timer.tick % 5 == 0 && WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {
+          _check();
+        }
       });
     } catch (e) { if (mounted) { setState(() => _error = e.toString()); } }
     finally { if (mounted) { setState(() => _busy = false); } }
