@@ -35,7 +35,11 @@ Map<String, dynamic> debt() => {
 class Fixture {
   final calls = <String, Object?>{};
   late final AppController controller;
-  Fixture({bool committed = false}) {
+  Fixture({
+    bool committed = false,
+    List<Map<String, dynamic>>? owedDebts,
+    List<Map<String, dynamic>>? ownedDebts,
+  }) {
     final base = Uri.parse('https://tracker.example.com/api/');
     controller = AppController(
       ApiClient(
@@ -85,10 +89,10 @@ class Fixture {
           }
           if (uri.path.endsWith('debt/owed')) {
             return ok({
-              'debts': [debt()],
+              'debts': owedDebts ?? [debt()],
             });
           }
-          return ok({'debts': []});
+          return ok({'debts': ownedDebts ?? []});
         }),
       ),
       MemoryStore(),
@@ -118,8 +122,8 @@ void main() {
       await reveal(tester, find.text('Makan siang'));
       await tester.tap(find.text('Makan siang'));
       await tester.pumpAndSettle();
-      await reveal(tester, find.text('💰 gaji'));
-      await tester.tap(find.text('💰 gaji'));
+      await reveal(tester, find.byTooltip('Kategori gaji'));
+      await tester.tap(find.byTooltip('Kategori gaji'));
       await tester.pumpAndSettle();
       final commit = find.widgetWithText(FilledButton, 'Konfirmasi catatan');
       await reveal(tester, commit);
@@ -148,8 +152,8 @@ void main() {
         'friendRequestId': 'q1',
         'action': 'accept',
       });
-      await reveal(tester, find.text('Tambah piutang'));
-      await tester.tap(find.text('Tambah piutang'));
+      await reveal(tester, find.byTooltip('Tambah piutang'));
+      await tester.tap(find.byTooltip('Tambah piutang'));
       await tester.pumpAndSettle();
       await tester.enterText(
         find.widgetWithText(TextFormField, 'Jumlah piutang (Rp)'),
@@ -178,8 +182,8 @@ void main() {
     await fixture.pump(tester);
     await tester.tap(find.byTooltip('Teman'));
     await tester.pumpAndSettle();
-    await reveal(tester, find.text('Tandai lunas'));
-    await tester.tap(find.text('Tandai lunas'));
+    await reveal(tester, find.text('Bayar'));
+    await tester.tap(find.text('Bayar'));
     await tester.pumpAndSettle();
     expect(fixture.calls.containsKey('PUT /api/debt/finish'), false);
     await tester.tap(find.text('Lanjutkan'));

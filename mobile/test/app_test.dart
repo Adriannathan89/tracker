@@ -95,8 +95,8 @@ void main() {
         find.widgetWithText(TextFormField, 'Judul'),
         'Makan siang',
       );
-      await reveal(tester, find.text('Simpan catatan'));
-      await tester.tap(find.text('Simpan catatan'));
+      await reveal(tester, find.text('Simpan Transaksi'));
+      await tester.tap(find.text('Simpan Transaksi'));
       await tester.pumpAndSettle();
       expect(calls, contains('POST /api/user/record'));
       expect((bodies['/api/user/record'] as Map)['amount'], 12500);

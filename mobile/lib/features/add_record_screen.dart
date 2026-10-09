@@ -1,3 +1,4 @@
+import '../ui/web_icon.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -6,6 +7,7 @@ import '../core/models.dart';
 import '../ui/theme.dart';
 import '../ui/widgets.dart';
 import '../ui/motion.dart';
+import '../ui/frontend_widgets.dart';
 
 class AddRecordScreen extends StatefulWidget {
   const AddRecordScreen({super.key, required this.controller});
@@ -97,244 +99,327 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => PopScope(
-    canPop: !_busy,
-    child: Scaffold(
-      appBar: AppBar(
-        title: Text(_details ? 'Detail catatan' : 'Tambah catatan'),
-      ),
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 600),
-            child: ListView(
-              padding: const EdgeInsets.all(24),
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: ink,
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'JUMLAH TRANSAKSI',
-                        style: TextStyle(
-                          color: Colors.white60,
-                          letterSpacing: 1,
-                        ),
-                      ),
-                      const SizedBox(height: 14),
-                      Semantics(
-                        liveRegion: true,
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            _formattedAmount,
-                            style: const TextStyle(
-                              color: lime,
-                              fontSize: 36,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
-                MotionEntrance(
-                  replayKey: _details,
-                  duration: TrackerMotion.quick,
-                  child: ShakeFeedback(
-                    trigger: _failures,
-                    child: Column(
-                      children: [
-                        if (!_details) ...[
-                          GridView(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 3,
-                                  mainAxisSpacing: 10,
-                                  crossAxisSpacing: 10,
-                                  mainAxisExtent: 60,
-                                ),
-                            children: [
-                              for (final key in [
-                                '1',
-                                '2',
-                                '3',
-                                '4',
-                                '5',
-                                '6',
-                                '7',
-                                '8',
-                                '9',
-                                '000',
-                                '0',
-                                'del',
-                              ])
-                                _amountKey(key),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: OutlinedButton(
-                              onPressed: () => _pressAmount(','),
-                              child: const Text(','),
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          BusyButton(
-                            busy: false,
-                            label: 'Lanjutkan',
-                            onPressed: () {
-                              if (parseAmount(_amount) == null) {
-                                setState(() {
-                                  _error =
-                                      'Masukkan jumlah positif dengan maksimal 2 angka desimal.';
-                                  _failures++;
-                                });
-                                return;
-                              }
-                              FocusScope.of(context).unfocus();
-                              setState(() {
-                                _details = true;
-                                _error = null;
-                              });
-                            },
-                          ),
-                        ] else
-                          Form(
-                            key: _form,
-                            child: Column(
-                              children: [
-                                TextButton.icon(
-                                  onPressed: _busy
-                                      ? null
-                                      : () {
-                                          FocusScope.of(context).unfocus();
-                                          setState(() => _details = false);
-                                        },
-                                  icon: const Icon(Icons.edit_outlined),
-                                  label: const Text('Ubah jumlah'),
-                                ),
-                                TextFormField(
-                                  controller: _title,
-                                  enabled: !_busy,
-                                  maxLength: 200,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Judul',
-                                    hintText: 'Misalnya beli nasi goreng',
-                                  ),
-                                  validator: (v) => (v?.trim().isEmpty ?? true)
-                                      ? 'Judul wajib diisi.'
-                                      : null,
-                                ),
-                                const SizedBox(height: 16),
-                                TextFormField(
-                                  controller: _description,
-                                  enabled: !_busy,
-                                  maxLines: 3,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Deskripsi (opsional)',
-                                  ),
-                                  validator: (v) =>
-                                      utf8.encode(v ?? '').length > 4000
-                                      ? 'Deskripsi maksimal 4000 byte.'
-                                      : null,
-                                ),
-                                const SizedBox(height: 16),
-                                ListTile(
-                                  contentPadding: EdgeInsets.zero,
-                                  leading: const Icon(
-                                    Icons.calendar_today_outlined,
-                                  ),
-                                  title: const Text('Tanggal transaksi'),
-                                  subtitle: Text(dateLabel(_date)),
-                                  trailing: const Icon(Icons.chevron_right),
-                                  onTap: _busy
-                                      ? null
-                                      : () async {
-                                          final result = await showDatePicker(
-                                            context: context,
-                                            initialDate: _date,
-                                            firstDate: DateTime(2000),
-                                            lastDate: DateTime(
-                                              DateTime.now().year + 5,
-                                              12,
-                                              31,
-                                            ),
-                                          );
-                                          if (result != null && mounted) {
-                                            setState(() => _date = result);
-                                          }
-                                        },
-                                ),
-                                const SizedBox(height: 20),
-                                const Card(
-                                  child: Padding(
-                                    padding: EdgeInsets.all(16),
-                                    child: Text(
-                                      'AI akan menyarankan kategori. Setelah disimpan, periksa dan konfirmasi catatan agar masuk ke saldo.',
+  Widget build(BuildContext context) {
+    final p = WebPalette.of(context);
+    return PopScope(
+      canPop: !_busy,
+      child: Scaffold(
+        appBar: WebPageHeader(
+          textScale: MediaQuery.textScalerOf(context).scale(12) / 12,
+          title: 'Catat Transaksi',
+          leading: IconButton(
+            tooltip: 'Kembali',
+            onPressed: _busy ? null : () => Navigator.pop(context),
+            icon: const WebIcon(Icons.arrow_back, size: 20),
+          ),
+        ),
+        body: SafeArea(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 440),
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+                children: [
+                  MotionEntrance(
+                    replayKey: _details,
+                    duration: TrackerMotion.quick,
+                    child: ShakeFeedback(
+                      trigger: _failures,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          if (!_details) ...[
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    'Jumlah',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: 1.1,
+                                      color: p.muted,
                                     ),
                                   ),
-                                ),
-                                const SizedBox(height: 24),
-                                BusyButton(
-                                  busy: _busy,
-                                  label: 'Simpan catatan',
-                                  onPressed: _save,
-                                ),
-                              ],
-                            ),
-                          ),
-                        if (_error != null)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 16),
-                            child: Text(
-                              _error!,
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.error,
+                                  const SizedBox(height: 8),
+                                  Semantics(
+                                    liveRegion: true,
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        _formattedAmount,
+                                        style: monoStyle(
+                                          size: 52,
+                                          weight: FontWeight.w800,
+                                          color: p.foreground,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ),
-                      ],
+                            const SizedBox(height: 16),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                              ),
+                              child: GridView(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 3,
+                                      mainAxisSpacing: 10,
+                                      crossAxisSpacing: 10,
+                                    ),
+                                children: [
+                                  for (final key in [
+                                    '1',
+                                    '2',
+                                    '3',
+                                    '4',
+                                    '5',
+                                    '6',
+                                    '7',
+                                    '8',
+                                    '9',
+                                    '000',
+                                    '0',
+                                    'del',
+                                  ])
+                                    _amountKey(key),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: OutlinedButton(
+                                onPressed: () => _pressAmount(','),
+                                child: const Text(','),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            BusyButton(
+                              busy: false,
+                              label: 'Lanjutkan',
+                              arrow: true,
+                              onPressed: () {
+                                if (parseAmount(_amount) == null) {
+                                  setState(() {
+                                    _error =
+                                        'Masukkan jumlah positif dengan maksimal 2 angka desimal.';
+                                    _failures++;
+                                  });
+                                  return;
+                                }
+                                FocusScope.of(context).unfocus();
+                                setState(() {
+                                  _details = true;
+                                  _error = null;
+                                });
+                              },
+                            ),
+                            const SizedBox(height: 12),
+                            OutlinedButton.icon(
+                              onPressed: () =>
+                                  Navigator.pop(context, 'friends'),
+                              style: OutlinedButton.styleFrom(
+                                backgroundColor: p.amberSoft,
+                                foregroundColor: p.secondary,
+                                side: BorderSide(color: p.amber),
+                                minimumSize: const Size(48, 48),
+                              ),
+                              icon: const WebIcon(
+                                Icons.people_outline,
+                                size: 18,
+                              ),
+                              label: const Text('Catat sebagai hutang/piutang'),
+                            ),
+                          ] else
+                            Form(
+                              key: _form,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 12,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: p.elevated,
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Jumlah',
+                                                style: TextStyle(
+                                                  fontSize: 11,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: p.muted,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 3),
+                                              FittedBox(
+                                                fit: BoxFit.scaleDown,
+                                                alignment: Alignment.centerLeft,
+                                                child: Text(
+                                                  _formattedAmount,
+                                                  style: monoStyle(size: 22),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Tooltip(
+                                          message: 'Ubah jumlah',
+                                          child: TextButton(
+                                            onPressed: _busy
+                                                ? null
+                                                : () {
+                                                    FocusScope.of(
+                                                      context,
+                                                    ).unfocus();
+                                                    setState(
+                                                      () => _details = false,
+                                                    );
+                                                  },
+                                            child: const Text('← Ubah'),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  TextFormField(
+                                    controller: _title,
+                                    enabled: !_busy,
+                                    maxLength: 200,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Judul',
+                                      hintText: 'Contoh: Makan siang',
+                                    ),
+                                    validator: (v) =>
+                                        (v?.trim().isEmpty ?? true)
+                                        ? 'Judul wajib diisi.'
+                                        : null,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  InkWell(
+                                    onTap: _busy
+                                        ? null
+                                        : () async {
+                                            final result = await showDatePicker(
+                                              context: context,
+                                              initialDate: _date,
+                                              firstDate: DateTime(2000),
+                                              lastDate: DateTime(
+                                                DateTime.now().year + 5,
+                                                12,
+                                                31,
+                                              ),
+                                            );
+                                            if (result != null && mounted) {
+                                              setState(() => _date = result);
+                                            }
+                                          },
+                                    child: InputDecorator(
+                                      decoration: const InputDecoration(
+                                        labelText: 'Tanggal',
+                                        suffixIcon: WebIcon(
+                                          Icons.calendar_today_outlined,
+                                          size: 18,
+                                        ),
+                                      ),
+                                      child: Text(dateLabel(_date)),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  TextFormField(
+                                    controller: _description,
+                                    enabled: !_busy,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Catatan (opsional)',
+                                      hintText: 'Tambahkan catatan…',
+                                    ),
+                                    validator: (v) =>
+                                        utf8.encode(v ?? '').length > 4000
+                                        ? 'Deskripsi maksimal 4000 byte.'
+                                        : null,
+                                  ),
+                                  const SizedBox(height: 24),
+                                  BusyButton(
+                                    busy: _busy,
+                                    label: 'Simpan Transaksi',
+                                    icon: Icons.check,
+                                    onPressed: _save,
+                                  ),
+                                  const SizedBox(height: 12),
+                                  OutlinedButton(
+                                    onPressed: _busy
+                                        ? null
+                                        : () => Navigator.pop(context),
+                                    child: const Text('Batal'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          if (_error != null)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 16),
+                              child: Text(
+                                _error!,
+                                style: TextStyle(color: p.red),
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
       ),
-    ),
-  );
-  Widget _amountKey(String key) => key == 'del'
-      ? Tooltip(
-          message: 'Hapus angka',
-          child: OutlinedButton(
+    );
+  }
+
+  Widget _amountKey(String key) {
+    final p = WebPalette.of(context);
+    final style = OutlinedButton.styleFrom(
+      backgroundColor: key == 'del' ? p.sunken : p.elevated,
+      foregroundColor: p.foreground,
+      side: BorderSide.none,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      textStyle: monoStyle(size: 22, weight: FontWeight.w600),
+    );
+    return key == 'del'
+        ? Tooltip(
+            message: 'Hapus angka',
+            child: OutlinedButton(
+              style: style,
+              onPressed: () => _pressAmount(key),
+              child: const WebIcon(
+                Icons.backspace_outlined,
+                size: 20,
+                semanticLabel: 'Hapus angka',
+              ),
+            ),
+          )
+        : OutlinedButton(
+            style: style,
             onPressed: () => _pressAmount(key),
-            child: const Icon(
-              Icons.backspace_outlined,
-              semanticLabel: 'Hapus angka',
-            ),
-          ),
-        )
-      : OutlinedButton(
-          onPressed: () => _pressAmount(key),
-          style: OutlinedButton.styleFrom(
-            textStyle: const TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          child: Text(key),
-        );
+            child: Text(key),
+          );
+  }
 }

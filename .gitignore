@@ -27,3 +27,7 @@ training/data/feedback*.csv
 /mobile/flutter-test.log
 /mobile/flutter-test-results.json
 /mobile/android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
+
+/mobile/assets/fonts/*.ttf
+/mobile/assets/fonts/*-OFL.txt
+/mobile/assets/fonts/*.tmp

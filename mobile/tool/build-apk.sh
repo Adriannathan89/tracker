@@ -7,6 +7,7 @@ case "$tracker_api_url" in
   https://*) ;;
   *) echo 'Release APK requires an HTTPS TRACKER_API_URL.' >&2; exit 1 ;;
 esac
+bash tool/prepare-fonts.sh
 flutter pub get
 dart format lib test
 flutter analyze

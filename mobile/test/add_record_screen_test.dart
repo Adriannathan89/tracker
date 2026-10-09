@@ -38,8 +38,8 @@ void main() {
     await reveal(tester, find.text('Lanjutkan'));
     await tester.tap(find.text('Lanjutkan'));
     await tester.pumpAndSettle();
-    await reveal(tester, find.text('Ubah jumlah'));
-    await tester.tap(find.text('Ubah jumlah'));
+    await reveal(tester, find.byTooltip('Ubah jumlah'));
+    await tester.tap(find.byTooltip('Ubah jumlah'));
     await tester.pumpAndSettle();
     expect(find.text('Rp 1.250.000'), findsOneWidget);
     expect(find.byType(TextFormField), findsNothing);
@@ -70,7 +70,7 @@ void main() {
     await reveal(tester, find.text('Lanjutkan'));
     await tester.tap(find.text('Lanjutkan'));
     await tester.pumpAndSettle();
-    expect(find.text('Detail catatan'), findsNothing);
+    expect(find.widgetWithText(TextFormField, 'Judul'), findsNothing);
     expect(
       find.text('Masukkan jumlah positif dengan maksimal 2 angka desimal.'),
       findsOneWidget,

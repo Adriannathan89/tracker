@@ -1,6 +1,6 @@
 # Tracker Android
 
-Aplikasi Flutter/Dart di monorepo ini menggunakan backend Tracker yang sama dengan `app/`. Layar mengikuti desain mobile web: krem, lime, kartu saldo gelap, navigasi bawah dan mode gelap. Ikon memakai aset Tracker yang sudah ada. Font menggunakan font sistem Android; font web Plus Jakarta Sans/JetBrains Mono belum dibundel.
+Aplikasi Flutter/Dart di monorepo ini menggunakan backend Tracker yang sama dengan `app/`. Layar mengikuti desain mobile web: krem, lime, kartu saldo gelap, navigasi bawah dan mode gelap. Ikon navigasi memakai garis vektor seperti web. Font Plus Jakarta Sans dan JetBrains Mono dibundel saat build untuk digunakan offline.
 
 Fitur: login/daftar/session persisten/logout; dashboard saldo dan ringkasan bulanan; pencarian/filter catatan; tambah transaksi dua tahap; kategori AI dari backend; konfirmasi/koreksi kategori dan hapus draft; teman/permintaan; utang/piutang/pelunasan; ubah username; Discord dan pengaturan notifikasi. Semua data berasal dari server. Aplikasi memerlukan internet; tidak menyediakan transaksi offline. Login tersimpan sebagai cookie terenkripsi menggunakan Android secure storage; password tidak disimpan.
 
@@ -12,6 +12,7 @@ Install [Flutter 3.35.7](https://docs.flutter.dev/install/archive) dan [Android 
 flutter doctor
 flutter doctor --android-licenses
 cd mobile
+bash tool/prepare-fonts.sh
 flutter pub get
 dart format lib test
 flutter analyze
@@ -85,3 +86,5 @@ Kelancaran Android belum diukur di perangkat. Setelah build, jalankan `flutter r
 Tes source mencakup parsing DTO/filter/nominal, persistensi dan kedaluwarsa cookie, refresh bersamaan, login gagal, session habis, network failure dan alur widget. Di lingkungan implementasi saat ini Flutter/Dart/Android SDK tidak tersedia dan unduhan terminal gagal DNS, sehingga `flutter analyze`, `flutter test`, dan build APK belum dijalankan. APK belum dihasilkan atau diuji pada perangkat. Jalankan perintah di atas atau workflow untuk validasi tersebut; jangan menganggap pemeriksaan statis sebagai hasil kompilasi.
 
 Setelah build, cek pada HP: daftar/login, restart aplikasi, create/commit kategori, pencarian dan filter, teman dengan dua akun, pinjam/bayar, rename, dark mode, Discord bila bot dikonfigurasi, logout, koneksi terputus dan refresh setelah 10 menit. Integrasi backend/VPS dan Discord membutuhkan server yang berjalan.
+
+Desain Android mengikuti komponen mobile di `app/src/app/feature/` dan token di `app/src/styles.css`. Sebelum build release langsung, jalankan `bash tool/prepare-fonts.sh` untuk menyiapkan font (perlu internet pada unduhan pertama). GitHub Actions dan `tool/build-apk.sh` menjalankan langkah ini otomatis. APK menyertakan kedua font beserta lisensi SIL Open Font License; aplikasi tidak mengunduh font saat berjalan. Build manual tanpa persiapan font memakai font sistem sebagai fallback; jalankan langkah persiapan untuk mendapatkan tipografi web. Kesamaan visual masih perlu diperiksa melalui screenshot Android dan web pada ukuran viewport yang sama.
