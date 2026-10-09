@@ -154,13 +154,16 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                     child: Column(
                       children: [
                         if (!_details) ...[
-                          GridView.count(
-                            crossAxisCount: 3,
+                          GridView(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
-                            mainAxisSpacing: 10,
-                            crossAxisSpacing: 10,
-                            mainAxisExtent: 60,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  mainAxisSpacing: 10,
+                                  crossAxisSpacing: 10,
+                                  mainAxisExtent: 60,
+                                ),
                             children: [
                               for (final key in [
                                 '1',
