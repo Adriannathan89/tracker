@@ -87,20 +87,38 @@ class TrackerShell extends StatefulWidget {
 }
 
 class _TrackerShellState extends State<TrackerShell> {
-  int _tab = 0;
+  int _tab = 0, _returnTab = 0;
+  bool _addingBusy = false;
   static const _labels = ['Beranda', 'Catatan', 'Teman', 'Saya'];
-  void _select(int value) => setState(() => _tab = value);
-  Future<void> _add() async {
-    final saved = await Navigator.of(context).push<Object>(
-      MaterialPageRoute(
-        builder: (_) => AddRecordScreen(controller: widget.controller),
-      ),
-    );
-    if (saved == 'friends' && mounted) {
-      _select(2);
+  void _select(int value) {
+    if (_addingBusy) {
+      return;
     }
-    if (saved == true && mounted) {
-      _select(1);
+    FocusManager.instance.primaryFocus?.unfocus();
+    setState(() => _tab = value);
+  }
+
+  void _add() {
+    if (_addingBusy || _tab == 4) {
+      return;
+    }
+    _returnTab = _tab;
+    _select(4);
+  }
+
+  void _finishAdd(Object? result) {
+    if (!mounted) {
+      return;
+    }
+    _addingBusy = false;
+    _select(
+      result == true
+          ? 1
+          : result == 'friends'
+          ? 2
+          : _returnTab,
+    );
+    if (result == true) {
       toast(
         context,
         'Catatan tersimpan. Periksa kategori AI dan konfirmasi draft.',
@@ -109,115 +127,160 @@ class _TrackerShellState extends State<TrackerShell> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: WebPageHeader(
-      textScale: MediaQuery.textScalerOf(context).scale(12) / 12,
-      title: const ['Home', 'Transaksi', 'Teman', 'tracker'][_tab],
-      actions: [
-        WebThemeToggle(
-          dark: widget.controller.dark,
-          onPressed: () async {
-            try {
-              await widget.controller.toggleTheme();
-            } catch (e) {
-              if (context.mounted) {
-                toast(context, e.toString());
+  Widget build(BuildContext context) => PopScope(
+    canPop: _tab != 4,
+    onPopInvokedWithResult: (didPop, result) {
+      if (!didPop && _tab == 4 && !_addingBusy) {
+        _finishAdd(null);
+      }
+    },
+    child: Scaffold(
+      appBar: WebPageHeader(
+        textScale: MediaQuery.textScalerOf(context).scale(12) / 12,
+        title: const [
+          'Home',
+          'Transaksi',
+          'Teman',
+          'tracker',
+          'Catat Transaksi',
+        ][_tab],
+        actions: [
+          WebThemeToggle(
+            dark: widget.controller.dark,
+            onPressed: () async {
+              try {
+                await widget.controller.toggleTheme();
+              } catch (e) {
+                if (context.mounted) {
+                  toast(context, e.toString());
+                }
               }
-            }
-          },
-        ),
-        const SizedBox(width: 8),
-        Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: WebPalette.of(context).surface,
-            border: Border.all(color: WebPalette.of(context).border),
-            borderRadius: BorderRadius.circular(12),
+            },
           ),
-          child: IconButton(
-            tooltip: 'Notifikasi',
-            iconSize: 20,
-            onPressed: () => _select(3),
-            icon: const WebIcon(Icons.notifications_outlined),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: WebPalette.of(context).accent,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: TextButton(
-            onPressed: () => _select(3),
-            style: TextButton.styleFrom(
-              padding: EdgeInsets.zero,
-              foregroundColor: ink,
+          const SizedBox(width: 8),
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: WebPalette.of(context).surface,
+              border: Border.all(color: WebPalette.of(context).border),
+              borderRadius: BorderRadius.circular(12),
             ),
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                (widget.controller.profile?.username ?? '?').characters
-                    .take(2)
-                    .toString()
-                    .toUpperCase(),
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
+            child: IconButton(
+              tooltip: 'Notifikasi',
+              iconSize: 20,
+              onPressed: () => _select(3),
+              icon: const WebIcon(Icons.notifications_outlined),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: WebPalette.of(context).accent,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: TextButton(
+              onPressed: () => _select(3),
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.zero,
+                foregroundColor: ink,
+              ),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  (widget.controller.profile?.username ?? '?').characters
+                      .take(2)
+                      .toString()
+                      .toUpperCase(),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ],
-    ),
-    body: SafeArea(
-      top: false,
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 760),
-          child: MotionTabs(
-            index: _tab,
-            children: [
-              DashboardScreen(
-                controller: widget.controller,
-                onAdd: _add,
-                onRecords: () => _select(1),
-                onFriends: () => _select(2),
-              ),
-              RecordsScreen(controller: widget.controller),
-              FriendsScreen(controller: widget.controller),
-              ProfileScreen(controller: widget.controller),
-            ],
+        ],
+      ),
+      body: SafeArea(
+        top: false,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 760),
+            child: MotionTabs(
+              index: _tab,
+              children: [
+                DashboardScreen(
+                  controller: widget.controller,
+                  onAdd: _add,
+                  onRecords: () => _select(1),
+                  onFriends: () => _select(2),
+                ),
+                RecordsScreen(controller: widget.controller),
+                FriendsScreen(controller: widget.controller),
+                ProfileScreen(controller: widget.controller),
+                if (_tab == 4)
+                  AddRecordScreen(
+                    controller: widget.controller,
+                    onFinish: _finishAdd,
+                    onBusyChanged: (busy) {
+                      if (mounted && _tab == 4) {
+                        setState(() => _addingBusy = busy);
+                      }
+                    },
+                  )
+                else
+                  const SizedBox.shrink(),
+              ],
+            ),
           ),
         ),
       ),
-    ),
-    floatingActionButton: FloatingActionButton(
-      tooltip: 'Tambah catatan',
-      onPressed: _add,
-      child: const WebIcon(Icons.add, size: 28),
-    ),
-    floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-    bottomNavigationBar: Container(
-      decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: WebPalette.of(context).border)),
-      ),
-      child: BottomAppBar(
-        color: WebPalette.of(context).surface,
-        surfaceTintColor: Colors.transparent,
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        height: 72,
-        child: Row(
-          children: [
-            _nav(0, Icons.home_outlined),
-            _nav(1, Icons.receipt_long_outlined),
-            const SizedBox(width: 64),
-            _nav(2, Icons.people_outline),
-            _nav(3, Icons.account_balance_wallet_outlined),
-          ],
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          border: Border(top: BorderSide(color: WebPalette.of(context).border)),
+        ),
+        child: BottomAppBar(
+          color: WebPalette.of(context).surface,
+          surfaceTintColor: Colors.transparent,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          height: 72,
+          child: Row(
+            children: [
+              _nav(0, Icons.home_outlined),
+              _nav(1, Icons.receipt_long_outlined),
+              Expanded(
+                child: Center(
+                  child: SizedBox.square(
+                    dimension: 56,
+                    child: Tooltip(
+                      message: 'Tambah catatan',
+                      child: FilledButton(
+                        onPressed: _addingBusy ? null : _add,
+                        style: FilledButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          backgroundColor: WebPalette.of(context).foreground,
+                          foregroundColor: WebPalette.of(context).accent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                        ),
+                        child: const WebIcon(
+                          Icons.add,
+                          size: 28,
+                          strokeWidth: 2.4,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              _nav(2, Icons.people_outline),
+              _nav(3, Icons.account_balance_wallet_outlined),
+            ],
+          ),
         ),
       ),
     ),
@@ -226,7 +289,7 @@ class _TrackerShellState extends State<TrackerShell> {
     child: Tooltip(
       message: _labels[index],
       child: InkWell(
-        onTap: () => _select(index),
+        onTap: _addingBusy ? null : () => _select(index),
         borderRadius: BorderRadius.circular(16),
         child: Semantics(
           selected: _tab == index,

@@ -21,6 +21,43 @@ Future<void> press(WidgetTester tester, String key) async {
 }
 
 void main() {
+  testWidgets(
+    'add transaction stays inside the shell and bottom navigation works',
+    (tester) async {
+      await openAmount(tester);
+      expect(find.text('Catat Transaksi'), findsOneWidget);
+      expect(find.byType(BottomAppBar), findsOneWidget);
+      expect(find.byType(Scaffold), findsOneWidget);
+      final add = find.byTooltip('Tambah catatan');
+      final bar = find.byType(BottomAppBar);
+      expect(tester.getCenter(add).dy, tester.getCenter(bar).dy);
+      await press(tester, '5');
+      await tester.tap(find.byTooltip('Catatan'));
+      await tester.pumpAndSettle();
+      expect(find.text('Transaksi'), findsOneWidget);
+      expect(find.text('Catat Transaksi'), findsNothing);
+      await tester.tap(add);
+      await tester.pumpAndSettle();
+      expect(find.text('Rp 0'), findsOneWidget);
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      expect(find.text('Transaksi'), findsOneWidget);
+    },
+  );
+
+  testWidgets('debt shortcut keeps the shell and opens friends', (
+    tester,
+  ) async {
+    await openAmount(tester);
+    final shortcut = find.text('Catat sebagai hutang/piutang');
+    await reveal(tester, shortcut);
+    await tester.tap(shortcut);
+    await tester.pumpAndSettle();
+    expect(find.byType(BottomAppBar), findsOneWidget);
+    expect(find.text('Catat Transaksi'), findsNothing);
+    expect(find.text('budi'), findsWidgets);
+  });
+
   testWidgets('keypad formats rupiah without opening the system keyboard', (
     tester,
   ) async {

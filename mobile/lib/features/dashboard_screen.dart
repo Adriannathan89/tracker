@@ -235,10 +235,13 @@ class DashboardScreen extends StatelessWidget {
                   color: accent ? p.limeSoft : p.sunken,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: WebIcon(
-                  icon,
-                  size: 16,
-                  color: accent ? p.limeInk : p.secondary,
+                child: Center(
+                  child: WebIcon(
+                    icon,
+                    size: 16,
+                    strokeWidth: icon == Icons.add ? 2.4 : 2.2,
+                    color: accent ? p.limeInk : p.secondary,
+                  ),
                 ),
               ),
               const SizedBox(height: 8),

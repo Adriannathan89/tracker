@@ -8,11 +8,13 @@ class WebIcon extends StatelessWidget {
     this.size,
     this.color,
     this.semanticLabel,
+    this.strokeWidth = 1.8,
   });
   final IconData icon;
   final double? size;
   final Color? color;
   final String? semanticLabel;
+  final double strokeWidth;
   @override
   Widget build(BuildContext context) {
     if (!_WebIconPainter.supported.contains(icon)) {
@@ -27,6 +29,7 @@ class WebIcon extends StatelessWidget {
           painter: _WebIconPainter(
             icon,
             color ?? theme.color ?? Theme.of(context).colorScheme.onSurface,
+            strokeWidth,
           ),
         ),
       ),
@@ -35,9 +38,10 @@ class WebIcon extends StatelessWidget {
 }
 
 class _WebIconPainter extends CustomPainter {
-  _WebIconPainter(this.icon, this.color);
+  _WebIconPainter(this.icon, this.color, this.strokeWidth);
   final IconData icon;
   final Color color;
+  final double strokeWidth;
   static const supported = [
     Icons.home_outlined,
     Icons.receipt_long_outlined,
@@ -57,7 +61,7 @@ class _WebIconPainter extends CustomPainter {
     final paint = Paint()
       ..color = color
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.8
+      ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round;
     void line(double x1, double y1, double x2, double y2) =>
@@ -190,5 +194,7 @@ class _WebIconPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _WebIconPainter oldDelegate) =>
-      icon != oldDelegate.icon || color != oldDelegate.color;
+      icon != oldDelegate.icon ||
+      color != oldDelegate.color ||
+      strokeWidth != oldDelegate.strokeWidth;
 }

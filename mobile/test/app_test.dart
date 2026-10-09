@@ -81,6 +81,7 @@ void main() {
       }
       await tester.tap(find.byTooltip('Tambah catatan'));
       await tester.pumpAndSettle();
+      expect(find.byType(BottomAppBar), findsOneWidget);
       for (final key in ['1', '2', '5', '0', '0']) {
         final button = find.widgetWithText(OutlinedButton, key);
         await reveal(tester, button);
@@ -91,6 +92,7 @@ void main() {
       await reveal(tester, find.text('Lanjutkan'));
       await tester.tap(find.text('Lanjutkan'));
       await tester.pumpAndSettle();
+      expect(find.byType(BottomAppBar), findsOneWidget);
       await tester.enterText(
         find.widgetWithText(TextFormField, 'Judul'),
         'Makan siang',
@@ -101,6 +103,8 @@ void main() {
       expect(calls, contains('POST /api/user/record'));
       expect((bodies['/api/user/record'] as Map)['amount'], 12500);
       expect((bodies['/api/user/record'] as Map)['title'], 'Makan siang');
+      expect(find.text('Transaksi'), findsOneWidget);
+      expect(find.byType(BottomAppBar), findsOneWidget);
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
       controller.dispose();
