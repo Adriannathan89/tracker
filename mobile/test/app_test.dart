@@ -81,10 +81,14 @@ void main() {
       }
       await tester.tap(find.byTooltip('Tambah catatan'));
       await tester.pumpAndSettle();
-      await tester.enterText(
-        find.widgetWithText(TextFormField, 'Jumlah (Rp)'),
-        '12500',
-      );
+      for (final key in ['1', '2', '5', '0', '0']) {
+        final button = find.widgetWithText(OutlinedButton, key);
+        await reveal(tester, button);
+        await tester.tap(button);
+        await tester.pumpAndSettle();
+      }
+      expect(find.text('Rp 12.500'), findsOneWidget);
+      await reveal(tester, find.text('Lanjutkan'));
       await tester.tap(find.text('Lanjutkan'));
       await tester.pumpAndSettle();
       await tester.enterText(
